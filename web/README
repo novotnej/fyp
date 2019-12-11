@@ -1,0 +1,8 @@
+Docker installation on Windows
+- if Docker is restarting and docker logs shows:  standard_init_linux.go:211: exec user process caused "no such file or directory"
+-- run dos2unix.exe on docker/entrypoint.sh and docker/vhost.conf
+-- rebuild the docker image
+-- remove the docker container
+-- start the docker container again
+- project files have to be placed somewhere outside of the Users home directory, because of reasons. Docker will not mount the volumes required to run the webserver.
+-- I suggest putting the project folder into C://www

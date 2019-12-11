@@ -1,0 +1,7 @@
+app/*
+bin/*
+temp/*
+log/*
+build/*
+vendor/*
+www/*
