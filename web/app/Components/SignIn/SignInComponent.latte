@@ -1,0 +1,32 @@
+<div class="hpanel">
+    <div class="panel-body">
+        {snippet signInComponent}
+            <div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
+            {if $user->isLoggedIn() && $view != 'changePassword'}
+                <a n:href="signOut!">Log out</a>
+            {else}
+                {if $view == 'login'}
+                    <h2>Sign in</h2>
+                    {control loginForm}
+                            <a href="{plink :Front:Sign:up}" class="btn btn-warning btn-block">Register</a>
+                            <a href="{plink :Front:Sign:forgottenPassword}" class="btn btn-default btn-block">Forgotten password</a>
+                {elseif $view == 'register'}
+                    <h2>Sign up</h2>
+                    {control registerForm}
+                    <a href="{plink :Front:Sign:in}" class="btn btn-danger btn-block">Log in</a>
+                {elseif $view == 'forgottenPassword'}
+                    <h2>Forgotten password</h2>
+                    {control forgottenPasswordForm}
+                    <a href="{plink :Front:Sign:in}" class="btn btn-danger btn-block">Log in</a>
+                    <a href="{plink :Front:Sign:up}" class="btn btn-warning btn-block">Register</a>
+                {elseif $view == 'passwordReset'}
+                    <h2>Password reset</h2>
+                    {control passwordResetForm}
+                {elseif $view == 'changePassword'}
+                    <h2>Change password</h2>
+                    {control changePasswordForm}
+                {/if}
+            {/if}
+        {/snippet}
+    </div>
+</div>

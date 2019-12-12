@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{ifset #title}{include #title} | {/ifset}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{$basePath}/templates/homepage/bootstrap-4.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="{$basePath}/templates/homepage/bootstrap-4.0.0/dist/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="{$basePath}/templates/homepage/css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="page">
+    <main class="page-content">
+        <div class="container">
+
+
+            <div n:foreach="$flashes as $flash" n:class="alert, 'alert-'.$flash->type">{$flash->message|noescape}</div>
+            {block content}{/block}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <p class="m-0 text-center text-white">Created by Jan Novotny, 2019</p>
+        </div>
+        <!-- /.container -->
+    </footer>
+</div>
+{block js}{/block}
+<!-- Bootstrap core JavaScript -->
+<script src="{$basePath}/templates/homepage/jquery/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="{$basePath}/templates/homepage/bootstrap-4.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

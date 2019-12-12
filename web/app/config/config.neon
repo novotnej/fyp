@@ -1,0 +1,43 @@
+parameters:
+    systemEmail: jn475@bath.ac.uk
+    baseDir: /var/www/www
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+recaptcha:
+	siteKey: %recaptchaSiteKey%
+	secretKey: %recaptchaSecretKey%
+
+extensions:
+	nextras.form: Nextras\Forms\Bridges\NetteDI\FormsExtension
+	orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
+	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
+	console: Kdyby\Console\DI\ConsoleExtension
+	recaptcha: Contributte\ReCaptcha\DI\ReCaptchaExtension
+mail:
+    smtp: false
+    host:
+    port:
+    secure: SSL
+    username:
+    password:
+latte:
+    macros:
+
+orm:
+	model: App\Services\OrmService
+
+session:
+	expiration: 14 days
+
+
+services:
+	mailerService:
+		class: App\Services\MailService
+		setup:
+			- setSystemEmail(%systemEmail%)
+	router: App\RouterFactory::createRouter
+	authenticator: App\Services\Authenticator
+	- App\Components\SignIn\ISignInComponentFactory

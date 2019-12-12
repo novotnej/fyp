@@ -12,11 +12,6 @@ docker-web:
 docker-composer-install:
 	docker run --rm -it -v `pwd`:/var/www -v ~/.composer:/home/harambe/.composer profisites/harambe composer install
 
-docker-composer-update:
-	docker run --rm -it -v `pwd`:/var/www -v ~/.composer:/home/harambe/.composer profisites/harambe composer update
-
-docker-bash:
-	docker run --rm -it -v `pwd`:/var/www -v ~/.composer:/home/harambe/.composer profisites/harambe bash
 
 make-dirs:
 	mkdir temp
