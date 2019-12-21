@@ -14,7 +14,7 @@ class QueuesDataGrid extends CommonDataGrid {
         $this->addColumnNumber('id', 'ID')->setSortable();
         $this->addColumnText('name', 'Name')->setSortable()->setFilterText();
 
-        //$this->addAction('edit', 'Edit', 'Device:edit')->setIcon('edit');
+        $this->addAction('edit', 'Modify', 'Queue:edit')->setIcon('edit');
         $this->setDefaultPerPage(50);
     }
 }

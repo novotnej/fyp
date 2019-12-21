@@ -8,7 +8,8 @@ use App\DataGrids\QueuesDataGrid;
 class HomepagePresenter extends BasePresenter {
 
     public function actionDefault() {
-
+        //FIXME - only temporary for testing
+        $this->redirect("Queue:");
     }
 
     public function renderDefault() {
@@ -22,11 +23,4 @@ class HomepagePresenter extends BasePresenter {
         return $this->createDataGrid('devices', $name);
     }
 
-    /**
-     * @param $name
-     * @return QueuesDataGrid
-     */
-    protected function createComponentQueuesDataGrid($name) {
-        return $this->createDataGrid("queues", $name);
-    }
 }
