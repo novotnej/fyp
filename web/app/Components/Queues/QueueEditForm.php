@@ -58,14 +58,14 @@ class QueueEditForm extends CommonComponent {
             $name = \Nette\Utils\Strings::webalize($form->values->name);
             $duplicateName = $this->queuesRepository->findBy(["name" => $name])->count();
             if ($duplicateName > 0) {
-                $form->addError("Queue with name ". $form->values->name." is already in the system.");
+                $form->addError("Queue with name ". $name." is already in the system.");
             }
         };
 
         $form->onSuccess[] = function(Nette\Application\UI\Form $form) {
-            //TODO - probably move this to a QueueService, will need to create the queue in RabbitMQ as well
-            if ($this->queueService->createQueue($form->values->name)) {
-                $this->flashMessage("Queue ".$form->values->name." successfully created.", "success");
+            $name = \Nette\Utils\Strings::webalize($form->values->name);
+            if ($this->queueService->createQueue($name)) {
+                $this->flashMessage("Queue ".$name." successfully created.", "success");
             } else {
                 $this->flashMessage("Unknown error occurred when creating a queue. Please check logs or contact the administrator.", "danger");
             }
@@ -83,13 +83,13 @@ class QueueEditForm extends CommonComponent {
             $name = \Nette\Utils\Strings::webalize($form->values->name);
             $duplicateName = $this->queuesRepository->getBy(["name" => $name]);
             if ($duplicateName && $duplicateName->id != $this->queue->id) {
-                $form->addError("Queue with name ". $form->values->name." is already in the system.");
+                $form->addError("Queue with name ". $name." is already in the system.");
             }
         };
         $form->onSuccess[] = function(Nette\Application\UI\Form $form) {
             $name = \Nette\Utils\Strings::webalize($form->values->name);
             if ($this->queueService->changeQueue($this->queue, $name)) {
-                $this->flashMessage("Queue ".$form->values->name." successfully modified.", "success");
+                $this->flashMessage("Queue ".$name." successfully modified.", "success");
             } else {
                 $this->flashMessage("Unknown error occurred when modifying a queue. Please check logs or contact the administrator.", "danger");
             }
