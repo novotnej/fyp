@@ -11,6 +11,13 @@ class CommonComponent extends Control {
         return $template;
     }
 
+    public function flashMessage($message, $type = "info", $forceInComponent = false) {
+        if ($this->presenter && !$forceInComponent) {
+            $this->presenter->flashMessage($message, $type);
+        } else {
+            parent::flashMessage($message, $type);
+        }
+    }
 
     public function createForm() {
         $form = new BaseForm();

@@ -41,3 +41,6 @@ services:
 	router: App\RouterFactory::createRouter
 	authenticator: App\Services\Authenticator
 	- App\Components\SignIn\ISignInComponentFactory
+	- App\Components\Queues\IQueueEditFormFactory
+	- App\Components\Queues\IDeviceEditFormFactory
+	- App\Services\QueueService

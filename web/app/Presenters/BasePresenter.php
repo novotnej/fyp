@@ -48,7 +48,7 @@ class BasePresenter extends Presenter {
      */
     protected function createDataGrid($dataGridName, $name, $filters = [], Identity $editor = null) {
         $className = '\App\DataGrids\\' . ucfirst($dataGridName) . 'DataGrid';
-        $grid = new $className($this, $name, null, $this->ormService, $filters, $editor);
+        $grid = new $className($this, $name, $this->ormService, $filters, $editor);
         return $grid;
     }
 
