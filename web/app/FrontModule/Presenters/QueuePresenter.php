@@ -2,6 +2,8 @@
 
 namespace App\FrontModule\Presenters;
 
+use App\Components\Messages\ISendMessageFormFactory;
+use App\Components\Messages\SendMessageForm;
 use App\Components\Queues\IQueueEditFormFactory;
 use App\DataGrids\QueuesDataGrid;
 use App\Model\Queue;
@@ -67,6 +69,20 @@ class QueuePresenter extends BasePresenter {
     protected function createComponentQueuesDataGrid($name) {
         return $this->createDataGrid("queues", $name);
     }
+
+    /**
+     * @return SendMessageForm
+     */
+    protected function createComponentSendMessageForm() {
+        $factory = $this->sendMessageFormFactory->create();
+        if ($this->queue) {
+            $factory->setQueue($this->queue);
+        }
+        return $factory;
+    }
+
+    /** @var ISendMessageFormFactory @inject */
+    public $sendMessageFormFactory;
 
     /** @var IQueueEditFormFactory @inject */
     public $queueComponentFactory;

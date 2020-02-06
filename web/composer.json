@@ -17,8 +17,9 @@
 		"ublaboo/datagrid": "^5.7@dev",
 		"kdyby/console" : "2.7@dev",
 		"janmarek/webloader": "^2.4@dev",
-		"contributte/recaptcha" : "3.1@dev"
-
-	},
+		"contributte/recaptcha" : "3.1@dev",
+		"gamee/nette-rabbitmq": "^3.3",
+      "ext-json": "*"
+    },
 	"minimum-stability": "dev"
 }

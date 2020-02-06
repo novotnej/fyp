@@ -16,6 +16,31 @@ extensions:
 	dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
 	console: Kdyby\Console\DI\ConsoleExtension
 	recaptcha: Contributte\ReCaptcha\DI\ReCaptchaExtension
+	rabbitmq: Gamee\RabbitMQ\DI\RabbitMQExtension
+
+rabbitmq:
+	connections:
+		default:
+			user: guest
+			password: guest
+			host: 172.17.0.6
+			port: 5672
+
+	exchanges:
+		messages_exchange:
+			connection: default
+			type: topic
+			# force exchange declare on first exchange operation during request
+			autoCreate: true
+
+	producers:
+		messagesProducer:
+			exchange: messages_exchange
+			# queue: testQueue
+			contentType: application/json
+			deliveryMode: 2 # Producer::DELIVERY_MODE_PERSISTENT
+
+
 mail:
     smtp: false
     host:
@@ -43,4 +68,5 @@ services:
 	- App\Components\SignIn\ISignInComponentFactory
 	- App\Components\Queues\IQueueEditFormFactory
 	- App\Components\Queues\IDeviceEditFormFactory
-	- App\Services\QueueService
+	- App\Components\Messages\ISendMessageFormFactory
+	- App\Services\QueueService(@App\Repositories\QueuesRepository, @Gamee\RabbitMQ\Client::getProducer(messagesProducer))

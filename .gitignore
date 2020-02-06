@@ -165,3 +165,6 @@ temp/*
 !temp/.gitignore
 
 vendor/*
+
+config.py
+raspi/config.py

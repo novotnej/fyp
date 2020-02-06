@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e2138329dac9378346e9c4a9eb953c3b",
+    "content-hash": "b3961fecc28731643a02c1234929bcc1",
     "packages": [
+        {
+            "name": "bunny/bunny",
+            "version": "v0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakubkulhan/bunny.git",
+                "reference": "8744243db0df7525a65299adef1aa50be407db53"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakubkulhan/bunny/zipball/8744243db0df7525a65299adef1aa50be407db53",
+                "reference": "8744243db0df7525a65299adef1aa50be407db53",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.0",
+                "psr/log": "~1.0",
+                "react/event-loop": "^1.0 || ^0.5 || ^0.4",
+                "react/promise": "~2.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bunny\\": "src/Bunny/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jakub Kulhan",
+                    "email": "jakub.kulhan@gmail.com"
+                }
+            ],
+            "description": "Performant pure-PHP AMQP (RabbitMQ) sync/async (ReactPHP) library",
+            "keywords": [
+                "AMQP",
+                "bunny",
+                "exchange",
+                "message",
+                "messaging",
+                "queue",
+                "queueing",
+                "rabbit",
+                "rabbitmq",
+                "react",
+                "react-php",
+                "reactphp"
+            ],
+            "time": "2018-08-15T13:25:32+00:00"
+        },
         {
             "name": "contributte/recaptcha",
             "version": "3.1.0",
@@ -67,6 +123,57 @@
                 "recaptcha"
             ],
             "time": "2018-08-22T13:31:56+00:00"
+        },
+        {
+            "name": "gamee/nette-rabbitmq",
+            "version": "v3.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gameeapp/nette-rabbitmq.git",
+                "reference": "43060b75dd180fb4884962347c26f2205911c383"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gameeapp/nette-rabbitmq/zipball/43060b75dd180fb4884962347c26f2205911c383",
+                "reference": "43060b75dd180fb4884962347c26f2205911c383",
+                "shasum": ""
+            },
+            "require": {
+                "bunny/bunny": "^0.2.4 || ^0.3 || ^0.4",
+                "php": ">=7.1",
+                "symfony/console": "~3.3 || ^4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.1",
+                "nette/neon": "^2.4",
+                "nette/tester": "^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Gamee\\RabbitMQ\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pavel Janda"
+                }
+            ],
+            "homepage": "https://github.com/gameeapp/nette-rabbitmq",
+            "keywords": [
+                "bunny",
+                "bunnyphp",
+                "extension",
+                "nette",
+                "php",
+                "rabbit",
+                "rabbitmq"
+            ],
+            "time": "2019-06-11T12:44:40+00:00"
         },
         {
             "name": "janmarek/webloader",
@@ -1340,6 +1447,7 @@
                 "nette",
                 "reflection"
             ],
+            "abandoned": true,
             "time": "2019-02-20T20:40:32+00:00"
         },
         {
@@ -1894,6 +2002,94 @@
                 "psr-3"
             ],
             "time": "2019-11-12T16:45:05+00:00"
+        },
+        {
+            "name": "react/event-loop",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/event-loop.git",
+                "reference": "6d24de090cd59cfc830263cfba965be77b563c13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/event-loop/zipball/6d24de090cd59cfc830263cfba965be77b563c13",
+                "reference": "6d24de090cd59cfc830263cfba965be77b563c13",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0 || ^6.4 || ^5.7 || ^4.8.35"
+            },
+            "suggest": {
+                "ext-event": "~1.0 for ExtEventLoop",
+                "ext-pcntl": "For signal handling support when using the StreamSelectLoop",
+                "ext-uv": "* for ExtUvLoop"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\EventLoop\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "ReactPHP's core reactor event loop that libraries can use for evented I/O.",
+            "keywords": [
+                "asynchronous",
+                "event-loop"
+            ],
+            "time": "2020-01-01T18:39:52+00:00"
+        },
+        {
+            "name": "react/promise",
+            "version": "2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/reactphp/promise.git",
+                "reference": "7c98fda611a3879ed3381d2ca57d93239465dfa9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/7c98fda611a3879ed3381d2ca57d93239465dfa9",
+                "reference": "7c98fda611a3879ed3381d2ca57d93239465dfa9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "React\\Promise\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Sorgalla",
+                    "email": "jsorgalla@gmail.com"
+                }
+            ],
+            "description": "A lightweight implementation of CommonJS Promises/A for PHP",
+            "keywords": [
+                "promise",
+                "promises"
+            ],
+            "time": "2019-12-03T16:46:28+00:00"
         },
         {
             "name": "symfony/console",
