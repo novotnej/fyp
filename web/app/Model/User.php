@@ -8,7 +8,6 @@ use Nextras\Dbal\Utils\DateTimeImmutable;
 /**
  * Class User
  * @package App\Model
- * @property string $username
  * @property string|null $email
  * @property string $password
  * @property string $role {enum static::ROLE_*}

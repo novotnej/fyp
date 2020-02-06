@@ -9,9 +9,9 @@ class UsersRepository extends CommonRepository {
         return [User::class];
     }
 
-    public function getByUsername($username) {
+    public function getByUsername($email) {
         return $this->getBy([
-            "username" => $username
+            "email" => $email
         ]);
     }
 
@@ -21,9 +21,8 @@ class UsersRepository extends CommonRepository {
      * @param $password
      * @return User
      */
-    public function registerUser($username, $email, $password) {
+    public function registerUser($email, $password) {
         $user = new User();
-        $user->username = $username;
         $user->email = $email;
         $user->setNewPassword($password);
         $user->role = User::ROLE_USER;

@@ -48,7 +48,8 @@ class SignInComponent extends CommonComponent {
 
     public function createForm() {
         $form = parent::createForm();
-        $form->addInvisibleReCaptcha('recaptcha', $required = TRUE, $message = 'Are you a bot?');
+        //FIXME - recaptcha not working on localhost
+        //$form->addInvisibleReCaptcha('recaptcha', $required = TRUE, $message = 'Are you a bot?');
         return $form;
     }
 
@@ -89,7 +90,7 @@ class SignInComponent extends CommonComponent {
      */
     protected function createComponentLoginForm() {
         $form = $this->createForm();
-        $form->addText('username', 'Username');
+        $form->addText('email', 'E-mail');
         $form->addPassword('password', 'Password')->setRequired();
         $form->addCheckbox('remember_me', 'Remember me?')
             ->getControl()->setAttribute("class", "i-checks");
@@ -112,7 +113,6 @@ class SignInComponent extends CommonComponent {
      */
     protected function createComponentRegisterForm() {
         $form = $this->createForm();
-        $form->addText("username", "Username");
         $form->addEmail('email', 'E-mail');
         $this->addPasswordInputs($form);
         $form->addCheckbox('terms', 'I agree with the terms and conditions')
@@ -122,14 +122,13 @@ class SignInComponent extends CommonComponent {
         $form->addSubmit('submit', "Sign up")
             ->setHtmlAttribute("class", "btn btn-block btn-success");;
         $form->onValidate[] = function(Form $form) {
-            $user = $this->usersRepository->getByUsername($form->values->username);
+            $user = $this->usersRepository->getByUsername($form->values->email);
             if ($user) {
                 $form->addError("User with this username already exists");
             }
         };
         $form->onSuccess[] = function(Form $form) {
             $this->usersRepository->registerUser(
-                $form->values->username,
                 $form->values->email,
                 $form->values->password
             );
@@ -152,7 +151,7 @@ class SignInComponent extends CommonComponent {
         try {
             // we try to log the user in
             $user = $this->presenter->getUser();
-            $user->login($form->values->username, $form->values->password);
+            $user->login($form->values->email, $form->values->password);
             if ($form->values->remember_me) {
                 $this->presenter->user->setExpiration('14 days', FALSE);
             }
@@ -197,22 +196,18 @@ class SignInComponent extends CommonComponent {
      */
     protected function createComponentForgottenPasswordForm() {
         $form = $this->createForm();
-        $form->addEmail('username', "Username");
+        $form->addEmail('email', "E-mail");
         $form->addSubmit('submit', "Request new password");
         $form->onValidate[] = function(Form $form) {
-            $user = $this->usersRepository->getByUsername($form->values->username);
+            $user = $this->usersRepository->getByUsername($form->values->email);
             if (!$user) {
-                $form->addError("User with this username not found.");
-            } else {
-                if (!$user->email) {
-                    $form->addError("This user does not have an e-mail address. It is not possible to reset password on this account.");
-                }
+                $form->addError("User with this e-mail not found.");
             }
         };
         $form->onSuccess[] = function(Form $form) {
             //TODO: Send e-mail, assign tokens
             /** @var User $user */
-            $user = $this->usersRepository->getByUsername($form->values->username);
+            $user = $this->usersRepository->getByUsername($form->values->email);
             $user->passwordResetToken = Random::generate(25);
             $user->passwordResetToken2 = Random::generate(25);
             $user->passwordResetRequested = new \DateTime();
