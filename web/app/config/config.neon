@@ -23,7 +23,7 @@ rabbitmq:
 		default:
 			user: guest
 			password: guest
-			host: 172.17.0.6
+			host: 185.8.239.18
 			port: 5672
 
 	exchanges:

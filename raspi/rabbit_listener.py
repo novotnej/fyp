@@ -6,7 +6,7 @@ import MessageSender
 import json
 import config
 
-RABBIT_HOST = "some-rabbit"
+RABBIT_HOST = "185.8.239.18"
 EXCHANGE_NAME = "messages_exchange"
 QUEUE_NAME = "messages_queue"
 MYSQL_HOST = "185.8.239.18"
