@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Model\Device;
 use App\Model\Queue;
 use App\Repositories\QueuesRepository;
 use \Gamee\RabbitMQ\Producer\Producer;
@@ -36,9 +37,33 @@ class QueueService extends CommonService {
             $key .= $queue->name.".";
         }
         $key = substr($key, 0, strlen($key) - 1); //remove the last dot
-        \Tracy\Debugger::barDump($key);
         $this->messagesProducer->publish($json, $headers, $key);
         return true;
+    }
+
+    /**
+     * @param Queue $queue
+     */
+    public function removeQueue(Queue $queue) {
+        if ($queue) {
+            $this->queuesRepository->removeAndFlush($queue);
+            //TODO - notification to subscribed devices
+        }
+    }
+
+    /**
+     * @param Device $device
+     */
+    public function removeDeviceQueue(Device $device) {
+        if ($device) {
+            $name = "device-". $device->id;
+            $queue = $this->queuesRepository->getBy(["name" => $name]);
+            if ($queue) {
+                if (count($queue->devices) == 1) { //only remove the device queue if the device is alone listening to it
+                    $this->removeQueue($queue);
+                }
+            }
+        }
     }
 
     /**

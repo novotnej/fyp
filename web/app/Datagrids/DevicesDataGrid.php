@@ -15,6 +15,7 @@ class DevicesDataGrid extends CommonDataGrid {
         $this->addColumnText('name', 'Name')->setSortable()->setFilterText();
 
         $this->addAction('edit', 'Modify', 'Device:edit')->setIcon('edit');
+        $this->addAction('delete', 'Delete', 'Device:delete')->setIcon('trash');
         $this->setDefaultPerPage(50);
     }
 }

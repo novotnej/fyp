@@ -7,6 +7,7 @@ use App\Components\Messages\SendMessageForm;
 use App\Components\Queues\IQueueEditFormFactory;
 use App\DataGrids\QueuesDataGrid;
 use App\Model\Queue;
+use App\Services\QueueService;
 
 class QueuePresenter extends BasePresenter {
 
@@ -22,6 +23,19 @@ class QueuePresenter extends BasePresenter {
 
     public function renderDetail() {
         $this->template->queue = $this->queue;
+    }
+
+    public function actionDelete($id) {
+        //TODO - ACL
+        $this->queue = $this->ormService->queues->getById($id);
+        if (!$this->queue) {
+            $this->setView("notFound");
+        } else {
+            $this->queueService->removeQueue($this->queue);
+            $this->flashMessage("Queue ". $this->queue->name." was deleted.", "success");
+            $this->redirect("default");
+            $this->terminate();
+        }
     }
 
     public function actionEdit($id) {
@@ -80,6 +94,9 @@ class QueuePresenter extends BasePresenter {
         }
         return $factory;
     }
+
+    /** @var QueueService @inject */
+    public $queueService;
 
     /** @var ISendMessageFormFactory @inject */
     public $sendMessageFormFactory;

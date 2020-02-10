@@ -1,8 +1,6 @@
 <?php
 namespace App\DataGrids;
 
-use App\Model\Queue;
-
 /**
  * Class DevicesDatagrid
  * @package App\DataGrids
@@ -15,6 +13,7 @@ class QueuesDataGrid extends CommonDataGrid {
         $this->addColumnText('name', 'Name')->setSortable()->setFilterText();
 
         $this->addAction('edit', 'Modify', 'Queue:edit')->setIcon('edit');
+        $this->addAction('delete', 'Delete', 'Queue:delete')->setIcon('trash');
         $this->setDefaultPerPage(50);
     }
 }

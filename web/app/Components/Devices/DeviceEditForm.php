@@ -7,6 +7,7 @@ use App\Model\Device;
 use App\Repositories\DevicesRepository;
 use Nette;
 use Nette\Utils\Strings;
+use Tracy\Debugger;
 
 
 class DeviceEditForm extends CommonComponent {
@@ -61,13 +62,16 @@ class DeviceEditForm extends CommonComponent {
 
         $form->onSuccess[] = function(Nette\Application\UI\Form $form) {
             $name = Strings::webalize($form->values->name);
-            $device = new Device(["name" => $name]);
-            if ($this->devicesRepository->persistAndFlush($device)) {
+            $secret = Nette\Utils\Random::generate(25);
+            $device = new Device(["name" => $name, "secret" => $secret]);
+            if ($device = $this->devicesRepository->persistAndFlush($device)) {
+
                 $this->flashMessage("Device ".$name." successfully created.", "success");
+                $this->presenter->redirect(":Front:Device:edit", $device->id);
             } else {
                 $this->flashMessage("Unknown error occurred when creating a device. Please check logs or contact the administrator.", "danger");
+                $this->redirect("this");
             }
-            $this->redirect("this");
         };
         return $form;
     }
