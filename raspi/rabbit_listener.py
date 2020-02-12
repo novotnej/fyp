@@ -74,7 +74,11 @@ def callback(ch, method, properties, body):
         exit()
     elif msg_type == MSG_TYPE_NORMAL:
         msgsender = MessageSender.MessageSender()
-        msgsender.send_message(message)
+        if "ttl" in json_body:
+            ttl = json_body["ttl"]
+        else:
+            ttl = config.default_message_ttl
+        msgsender.send_message(text=message, ttl=ttl)
         # print(" [x] %r:%r" % (method.routing_key, body))
     else:
         print("Unknown message type")

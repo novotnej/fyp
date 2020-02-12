@@ -5,6 +5,9 @@
 #   http://www.brettdangerfield.com/post/raspberrypi_tempature_monitor_project/
 
 import serial
+import calendar
+import time
+import threading
 
 
 def to_hex(text):
@@ -17,7 +20,7 @@ def to_hex(text):
 
 
 class MessageSender:
-    SERIALPORT = "/dev/ttyUSB0"
+    SERIALPORT = "/dev/ttyUSB2"
     BAUDRATE = 9600
 
     ser = serial.Serial()
@@ -34,6 +37,9 @@ class MessageSender:
     ser.dsrdtr = False  # disable hardware (DSR/DTR) flow control
     ser.writeTimeout = 0  # timeout for write
 
+    __messages = []
+    __last_text = ""
+
     print("Starting Up Serial Monitor")
 
     __instance = None
@@ -44,10 +50,11 @@ class MessageSender:
         return MessageSender.__instance
 
     def __init__(self):
-
         try:
             if not self.ser.isOpen():
                 self.ser.open()
+                print("asdas")
+                threading.Timer(10, self.check_expired_messages).start()
 
         except Exception as e:
             print("error open serial port: " + str(e))
@@ -56,10 +63,18 @@ class MessageSender:
     def __del__(self):
         self.ser.close()
 
-    def send_message(self, text):
-        print("Printing message: ", text)
-        if self.ser.isOpen():
+    def check_expired_messages(self):
+        print("Checking expired messages")
 
+        text = self.get_current_display_text()
+        if text != self.__last_text:
+            self.draw_text(text)
+            self.__last_text = text
+
+        threading.Timer(10, self.check_expired_messages).start()
+
+    def draw_text(self, text):
+        if self.ser.isOpen():
             try:
                 self.ser.flushInput()  # flush input buffer, discarding all its contents
                 self.ser.flushOutput()  # flush output buffer, aborting current output
@@ -73,3 +88,21 @@ class MessageSender:
 
         else:
             print("cannot open serial port ")
+
+    def get_current_display_text(self):
+        text = ""
+        ts = calendar.timegm(time.gmtime())
+        for msg in self.__messages:
+            if ts < msg["expiration"]:
+                text = text + "  \n" + msg["message"]
+            else:
+                self.__messages.remove(msg)
+        return text
+
+    def send_message(self, text, ttl):
+        print("Printing message: ", text)
+        ts = calendar.timegm(time.gmtime())
+        expiration = ts + ttl
+        self.__messages.append({"message": text, "expiration": expiration})
+        self.__last_text = self.get_current_display_text()
+        self.draw_text(self.__last_text)
