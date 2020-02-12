@@ -8,6 +8,10 @@ use \Gamee\RabbitMQ\Producer\Producer;
 
 class QueueService extends CommonService {
 
+    const   MSG_TYPE_NORMAL   = "normal",
+            MSG_TYPE_RELOAD   = "reload";
+
+
     /** @var QueuesRepository */
     protected $queuesRepository;
     /** @var Producer  */
@@ -26,10 +30,15 @@ class QueueService extends CommonService {
     /**
      * @param string $message
      * @param Queue[] $queues
+     * @param string $type
      * @return bool
      */
-    public function publish(string $message, array $queues) {
-        $json = json_encode(['message' => $message]);
+    public function publish(string $message, array $queues, string $type = self::MSG_TYPE_NORMAL) {
+        $json = json_encode([
+            "message" => $message,
+            "type" => $type
+        ]);
+
         $headers = [];
         $key = "";
         /** @var Queue $queue */
@@ -47,7 +56,8 @@ class QueueService extends CommonService {
     public function removeQueue(Queue $queue) {
         if ($queue) {
             $this->queuesRepository->removeAndFlush($queue);
-            //TODO - notification to subscribed devices
+            //notify subscribed devices their configuration has changed
+            $this->publish("", [$queue], static::MSG_TYPE_RELOAD);
         }
     }
 
