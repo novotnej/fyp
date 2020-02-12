@@ -57,6 +57,7 @@ class MessageSender:
         self.ser.close()
 
     def send_message(self, text):
+        print("Printing message: ", text)
         if self.ser.isOpen():
 
             try:

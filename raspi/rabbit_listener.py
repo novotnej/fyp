@@ -5,12 +5,20 @@ import socket
 import MessageSender
 import json
 import config
+import sys
+from datetime import datetime
+
+MSG_TYPE_NORMAL = "normal"
+MSG_TYPE_RELOAD = "reload"
 
 RABBIT_HOST = "185.8.239.18"
 EXCHANGE_NAME = "messages_exchange"
 QUEUE_NAME = "messages_queue"
 MYSQL_HOST = "185.8.239.18"
-MY_DEVICE_NAME = socket.gethostname()
+if len(sys.argv) > 1 and sys.argv[1]:
+    MY_DEVICE_NAME = (sys.argv[1])
+else:
+    MY_DEVICE_NAME = socket.gethostname()
 
 mydb = mysql.connector.connect(
     host=MYSQL_HOST,
@@ -30,7 +38,7 @@ channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type='topic', durable=
 result = channel.queue_declare(queue='', durable=False)
 queue_name = result.method.queue
 
-print(MY_DEVICE_NAME)
+print("Device: " + MY_DEVICE_NAME)
 
 mycursor.execute(
     "SELECT q.id, q.name FROM queue q LEFT JOIN device_in_queue diq ON diq.queue_id = q.id LEFT JOIN device d ON d.id = diq.device_id WHERE d.name = %s GROUP BY q.id",
@@ -55,13 +63,21 @@ print(' [*] Waiting for logs. To exit press CTRL+C')
 
 
 def callback(ch, method, properties, body):
-    msgsender = MessageSender.MessageSender()
     json_body = json.loads(body)
-    print(body)
-    print(json_body)
-    print(json_body['message'])
-    msgsender.send_message(json_body['message'])
-    print(" [x] %r:%r" % (method.routing_key, body))
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    message = current_time + " " + json_body["message"]
+    msg_type = json_body["type"]
+    if msg_type == MSG_TYPE_RELOAD:
+        # exit the program. Docker will restart it and reload the new configuration
+        print("Received reload message, exiting now")
+        exit()
+    elif msg_type == MSG_TYPE_NORMAL:
+        msgsender = MessageSender.MessageSender()
+        msgsender.send_message(message)
+        # print(" [x] %r:%r" % (method.routing_key, body))
+    else:
+        print("Unknown message type")
 
 
 channel.basic_consume(
