@@ -8,6 +8,7 @@ import serial
 import calendar
 import time
 import threading
+import config
 
 
 def to_hex(text):
@@ -20,7 +21,7 @@ def to_hex(text):
 
 
 class MessageSender:
-    SERIALPORT = "/dev/ttyUSB2"
+    SERIALPORT = config.SERIALPORT
     BAUDRATE = 9600
 
     ser = serial.Serial()
