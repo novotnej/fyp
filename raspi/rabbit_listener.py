@@ -6,6 +6,7 @@ import MessageSender
 import json
 import config
 import sys
+import os
 from datetime import datetime
 
 MSG_TYPE_NORMAL = "normal"
@@ -19,6 +20,9 @@ if len(sys.argv) > 1 and sys.argv[1]:
     MY_DEVICE_NAME = (sys.argv[1])
 else:
     MY_DEVICE_NAME = socket.gethostname()
+
+
+msgsender = MessageSender.MessageSender()
 
 mydb = mysql.connector.connect(
     host=MYSQL_HOST,
@@ -76,12 +80,12 @@ def callback(ch, method, properties, body):
     current_time = now.strftime("%H:%M")
     message = current_time + " " + json_body["message"]
     msg_type = json_body["type"]
+
     if msg_type == MSG_TYPE_RELOAD:
-        # exit the program. Docker will restart it and reload the new configuration
         print("Received reload message, exiting now")
-        exit()
+        # exit the program. Docker will restart it and reload the new configuration
+        os._exit(1)
     elif msg_type == MSG_TYPE_NORMAL:
-        msgsender = MessageSender.MessageSender()
         if "ttl" in json_body:
             ttl = json_body["ttl"]
         else:

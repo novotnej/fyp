@@ -40,6 +40,7 @@ class MessageSender:
 
     __messages = []
     __last_text = ""
+    __timer_thread = None
 
     print("Starting Up Serial Monitor")
 
