@@ -53,8 +53,8 @@ class MessageSender:
     def __init__(self):
         try:
             if not self.ser.isOpen():
-                self.ser.open()
-                print("asdas")
+                if config.SERIALPORT:
+                    self.ser.open()
                 threading.Timer(10, self.check_expired_messages).start()
 
         except Exception as e:
@@ -88,7 +88,7 @@ class MessageSender:
                 print("error communicating...: " + str(e))
 
         else:
-            print("cannot open serial port ")
+            print("serial port is not open")
 
     def get_current_display_text(self):
         text = ""
