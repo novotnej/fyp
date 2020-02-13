@@ -40,6 +40,14 @@ queue_name = result.method.queue
 
 print("Device: " + MY_DEVICE_NAME)
 
+mycursor.execute("SELECT d.id, d.name FROM device d WHERE d.name = %s", (MY_DEVICE_NAME,))
+device_result = mycursor.fetchone()
+device_queue = "device-" + str(device_result[0])
+
+# always bind to the device queue
+channel.queue_bind(
+            exchange=EXCHANGE_NAME, queue=queue_name, routing_key="#." + device_queue + ".#")
+
 mycursor.execute(
     "SELECT q.id, q.name FROM queue q LEFT JOIN device_in_queue diq ON diq.queue_id = q.id LEFT JOIN device d ON d.id = diq.device_id WHERE d.name = %s GROUP BY q.id",
     (MY_DEVICE_NAME,))
