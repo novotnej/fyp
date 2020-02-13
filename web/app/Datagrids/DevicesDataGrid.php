@@ -16,6 +16,7 @@ class DevicesDataGrid extends CommonDataGrid {
 
         $this->addAction('edit', 'Modify', 'Device:edit')->setIcon('edit');
         $this->addAction('delete', 'Delete', 'Device:delete')->setIcon('trash');
+        $this->addAction('detail', 'Detail', 'Device:detail')->setIcon('detail');
         $this->setDefaultPerPage(50);
     }
 }

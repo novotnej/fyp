@@ -14,6 +14,7 @@ class QueuesDataGrid extends CommonDataGrid {
 
         $this->addAction('edit', 'Modify', 'Queue:edit')->setIcon('edit');
         $this->addAction('delete', 'Delete', 'Queue:delete')->setIcon('trash');
+        $this->addAction('detail', 'Detail', 'Queue:detail')->setIcon('detail');
         $this->setDefaultPerPage(50);
     }
 }
