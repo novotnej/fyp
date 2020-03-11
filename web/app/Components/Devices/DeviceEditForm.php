@@ -4,7 +4,10 @@ namespace App\Components\Queues;
 
 use App\Components\CommonComponent;
 use App\Model\Device;
+use App\Model\Queue;
 use App\Repositories\DevicesRepository;
+use App\Repositories\QueuesRepository;
+use App\Services\QueueService;
 use Nette;
 use Nette\Utils\Strings;
 use Tracy\Debugger;
@@ -13,6 +16,10 @@ use Tracy\Debugger;
 class DeviceEditForm extends CommonComponent {
     /** @var DevicesRepository */
     protected $devicesRepository;
+    /** @var QueuesRepository  */
+    protected $queuesRepository;
+    /** @var QueueService  */
+    protected $queuesService;
     /** @var Device */
     protected $device;
 
@@ -22,9 +29,11 @@ class DeviceEditForm extends CommonComponent {
 
     private $view = self::VIEW_ADD;
 
-    public function __construct(DevicesRepository $devicesRepository) {
+    public function __construct(DevicesRepository $devicesRepository, QueuesRepository $queuesRepository, QueueService $queueService) {
         parent::__construct();
         $this->devicesRepository = $devicesRepository;
+        $this->queuesRepository = $queuesRepository;
+        $this->queuesService = $queueService;
     }
 
     public function setEditItem(Device $device) {
@@ -78,7 +87,21 @@ class DeviceEditForm extends CommonComponent {
 
     protected function createComponentEditForm() {
         $form = $this->createForm();
-        $form->addText("name", "Name")->setDefaultValue($this->device->name);
+        $form->addText("name", "Name");
+
+        $queues = $this->queuesRepository->findAll();
+        $queueValues = [];
+        $defaults = ["name" => $this->device->name, "queues" => []];
+        /** @var Queue $queue */
+        foreach ($queues as $queue) {
+            $queueValues[$queue->id] = $queue->name;
+            if ($this->device->queues->has($queue)) {
+                $defaults["queues"][] = $queue->id;
+            }
+        }
+        //TODO - do not show device-$id - this 
+        $form->addCheckboxList("queues", "Queues", $queueValues);
+        $form->setDefaults($defaults);
         $form->addSubmit("submit", "Save changes");
         $form->onValidate[] = function(Nette\Application\UI\Form $form) {
             //check if not changing name to something that already exists
@@ -91,6 +114,14 @@ class DeviceEditForm extends CommonComponent {
         $form->onSuccess[] = function(Nette\Application\UI\Form $form) {
             $name = Strings::webalize($form->values->name);
             $this->device->name = $name;
+            $selectedQueues = $this->queuesRepository->findById($form->values->queues);
+            $queues = [];
+            foreach ($selectedQueues as $selectedQueue) {
+                $queues[] = $selectedQueue;
+            }
+            $this->device->queues->set($queues);
+            //TODO - only send reload if the queues have changed
+            $this->queuesService->sendReloadMessageToDevice($this->device);
             if ($this->devicesRepository->persistAndFlush($this->device)) {
                 $this->flashMessage("Device ".$name." successfully modified.", "success");
             } else {

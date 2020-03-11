@@ -51,6 +51,26 @@ class QueueService extends CommonService {
     }
 
     /**
+     * @param Device $device
+     * @return bool
+     */
+    public function sendReloadMessageToDevice(Device $device) {
+        $queue = $this->queuesRepository->getBy(["name" => "device-" . $device->id]);
+        if ($queue) {
+            return $this->sendReloadMessageToQueue($queue);
+        }
+        return false;
+    }
+
+    /**
+     * @param Queue $queue
+     * @return bool
+     */
+    public function sendReloadMessageToQueue(Queue $queue) {
+        return $this->publish("", [$queue], self::MSG_TYPE_RELOAD);
+    }
+
+    /**
      * @param Queue $queue
      */
     public function removeQueue(Queue $queue) {

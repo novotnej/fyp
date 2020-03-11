@@ -13,7 +13,7 @@ class QueuesMapper extends CommonMapper {
         }
 
         if ($targetMapper instanceof DevicesMapper) {
-            return ['device_in_queue', ['device_id', 'queue_id']];
+            return ['device_in_queue', ['queue_id', 'device_id']];
         }
         return parent::getManyHasManyParameters($sourceProperty, $targetMapper);
     }

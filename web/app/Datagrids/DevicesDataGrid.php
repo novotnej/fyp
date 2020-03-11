@@ -1,8 +1,6 @@
 <?php
 namespace App\DataGrids;
 
-use App\Model\Device;
-
 /**
  * Class DevicesDatagrid
  * @package App\DataGrids
