@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-
+#include <string.h>
 #include <curl/curl.h>
 #include <errno.h>
 #include <sys/stat.h>
@@ -36,13 +36,17 @@
 int is_setup = 0;
 CURL *curl_handle;
 FILE *pagefile;
+char nl[] = "\n";
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     size_t written = fwrite(ptr, size, nmemb, (FILE *) stream);
+    fwrite(&nl, sizeof(char), strlen((const char *) &nl), (FILE *) stream);
+    written++;
     return written;
 }
 
 void setup(char url[], char filename[]) {
+    printf("%s \n", url);
     is_setup = 1;
 
     curl_global_init(CURL_GLOBAL_ALL);
