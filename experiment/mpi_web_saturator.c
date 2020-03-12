@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <mpi.h>
-#include <zconf.h>
+#include "url2file.c"
 #include <time.h>
 #include <pthread.h>
 
@@ -18,7 +17,7 @@ int **alloc_2d_int(int rows, int cols) {
     return ar;
 }
 
-int *alloc_1d_double(int cols) {
+int *alloc_1d_int(int cols) {
     int *ar= (int *)malloc(cols*sizeof(int));
     int i;
     for (i=0; i<cols; i++)
@@ -44,7 +43,12 @@ pthread_barrier_t barrier;
 void *start_test(int my_thread_rank) {
     pthread_barrier_wait(&barrier);
     char normalized_rank[18];
+    char target_file[49];
+    char url[68];
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
+    sprintf(url, "http://dissertation.profisites.com/api/%s/2000.txt", normalized_rank);
+    sprintf(target_file, "/var/www/fyp/experiment/%s.txt", normalized_rank);
+    download_url(url, target_file);
     printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
 }
 
