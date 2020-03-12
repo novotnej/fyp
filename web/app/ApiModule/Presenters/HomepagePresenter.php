@@ -28,8 +28,8 @@ class HomepagePresenter extends BasePresenter {
             default:
                 $this->getHttpResponse()->setContentType("text/plain");
                 print($client . "|" . $startTime . "|" . $end . "|" . $duration);
-                print(PHP_EOL);
-                print($content);
+                //print(PHP_EOL);
+                //print($content);
                 break;
         }
         $this->terminate();
