@@ -30,6 +30,7 @@ int contentLength;
 int threadsPerCore;
 int coreCount;
 int startTimeStamp;
+int downloadIterations;
 // Get the name of the processor
 char my_name[MPI_MAX_PROCESSOR_NAME];
 int name_len;
@@ -57,8 +58,15 @@ void *start_test(int my_thread_rank) {
 
     printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
     //TODO - in production change to a while loop
-    for (int i = 0; i < 100; i++) {
-        download_url(url, target_file);
+    if (downloadIterations > 0) {
+        int i;
+        for (i = 0; i < downloadIterations; i++) {
+            download_url(url, target_file);
+        }
+    } else {
+        while(1) {
+            download_url(url, target_file);
+        }
     }
 }
 
@@ -109,7 +117,7 @@ void init_test() {
 int main(int argc, char **argv) {
     //initial configuration from received arguments
     contentLength = atoi(argv[1]);
-    threadsPerCore = atof(argv[2]);
+    downloadIterations = atoi(argv[2]);
 
     /* Initialize the infrastructure necessary for communication */
     MPI_Init(&argc, &argv);

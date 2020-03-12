@@ -38,12 +38,29 @@ CURL *curl_handle;
 FILE *pagefile;
 char nl[] = "\n";
 
+typedef long long u64;
+
+u64 start_time_stamp, end_time_stamp;
+struct timeval tv;
+
+u64 get_time_stamp() {
+    gettimeofday(&tv,NULL);
+    return (1000000*tv.tv_sec) + tv.tv_usec;
+}
+
+
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
+    end_time_stamp = get_time_stamp();
     size_t written = fwrite(ptr, size, nmemb, (FILE *) stream);
+    //append execution time of the download
+    sprintf(nl, "|%08lld\n", (end_time_stamp - start_time_stamp));
     fwrite(&nl, sizeof(char), strlen((const char *) &nl), (FILE *) stream);
-    written++;
+    written+= strlen((const char *) &nl);
+    printf("Duration: %lld %lld %lld \n", end_time_stamp, start_time_stamp, (end_time_stamp - start_time_stamp));
+
     return written;
 }
+
 
 void setup(char url[], char filename[]) {
     printf("%s \n", url);
@@ -86,8 +103,9 @@ void download_url(char url[], char filename[]) {
     if (!is_setup) {
         setup(url, filename);
     }
-
+    start_time_stamp = get_time_stamp();
     curl_easy_perform(curl_handle);
+
 }
 
 void downloader_cleanup() {
