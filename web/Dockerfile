@@ -16,18 +16,18 @@ RUN apt-get update && apt-get install -y \
     sudo \
     nginx \
     git \
-    php7.2 \
-    php7.2-cli \
-    php7.2-curl \
-    php7.2-fpm \
-    php7.2-mysql \
-    php7.2-intl \
-    php7.2-dev \
-    php7.2-xml \
-    php7.2-mbstring \
-    php7.2-zip \
-    php7.2-gd \
-    php7.2-sqlite
+    php7.3 \
+    php7.3-cli \
+    php7.3-curl \
+    php7.3-fpm \
+    php7.3-mysql \
+    php7.3-intl \
+    php7.3-dev \
+    php7.3-xml \
+    php7.3-mbstring \
+    php7.3-zip \
+    php7.3-gd \
+    php7.3-sqlite
 
 
 # Composer
@@ -38,12 +38,12 @@ RUN yes | pecl install xdebug
 
 #RUN echo '*.*          @logs4.papertrailapp.com:36708' >> /etc/rsyslog.conf
 
-RUN echo 'date.timezone = Europe/Berlin' >> /etc/php/7.2/fpm/conf.d/20-date.ini
-RUN echo 'upload_max_filesize = 256M' >> /etc/php/7.2/fpm/conf.d/20-uploads.ini
-RUN echo 'post_max_size = 256M' >> /etc/php/7.2/fpm/conf.d/20-uploads.ini
+RUN echo 'date.timezone = Europe/Berlin' >> /etc/php/7.3/fpm/conf.d/20-date.ini
+RUN echo 'upload_max_filesize = 256M' >> /etc/php/7.3/fpm/conf.d/20-uploads.ini
+RUN echo 'post_max_size = 256M' >> /etc/php/7.3/fpm/conf.d/20-uploads.ini
 
 RUN echo "\ndaemon off;\n" >> /etc/nginx/nginx.conf
-RUN sed -i "s/user = www-data/user = www-data/g" /etc/php/7.2/fpm/pool.d/www.conf
+RUN sed -i "s/user = www-data/user = www-data/g" /etc/php/7.3/fpm/pool.d/www.conf
 
 ADD ./docker/vhost.conf /etc/nginx/sites-enabled/default
 ADD ./docker/entrypoint.sh /bin/entrypoint.sh
