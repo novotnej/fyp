@@ -19,6 +19,13 @@ class RouterFactory
 		$router = new RouteList;
 		$router[] = new Route('index.php', 'Front:Homepage:default', Route::ONE_WAY);
 
+        $router[] = new Route('api/<client>/<length>.<format>', [
+            'module' => 'Api',
+            'presenter' => 'Homepage',
+            'action' => 'default',
+
+        ]);
+
         $router[] = new Route('<presenter>/<action>[/<id>]', [
             'module' => 'Front',
             'presenter' => 'Homepage',
