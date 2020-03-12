@@ -43,13 +43,22 @@ pthread_barrier_t barrier;
 void *start_test(int my_thread_rank) {
     pthread_barrier_wait(&barrier);
     char normalized_rank[18];
-    char target_file[49];
-    char url[68];
+    char target_file[59];
+    char url[72];
+    char dir[35];
+
+    sprintf(dir, "/var/www/fyp/experiment/%d", startTimeStamp);
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
-    sprintf(url, "http://dissertation.profisites.com/api/%s/2000.txt", normalized_rank);
-    sprintf(target_file, "/var/www/fyp/experiment/%s.txt", normalized_rank);
-    download_url(url, target_file);
+    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
+    sprintf(target_file, "/var/www/fyp/experiment/%d/%s.txt", startTimeStamp, normalized_rank);
+
+    mkdir(dir, 0777);
+
     printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
+    //TODO - in production change to a while loop
+    for (int i = 0; i < 100; i++) {
+        download_url(url, target_file);
+    }
 }
 
 void create_subthreads(int n) {
