@@ -56,7 +56,7 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     sprintf(nl, "|%08lld\n", (end_time_stamp - start_time_stamp));
     fwrite(&nl, sizeof(char), strlen((const char *) &nl), (FILE *) stream);
     written+= strlen((const char *) &nl);
-    printf("Duration: %lld %lld %lld \n", end_time_stamp, start_time_stamp, (end_time_stamp - start_time_stamp));
+    //printf("Duration: %lld %lld %lld \n", end_time_stamp, start_time_stamp, (end_time_stamp - start_time_stamp));
 
     return written;
 }
