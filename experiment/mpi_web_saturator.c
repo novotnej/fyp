@@ -42,19 +42,38 @@ int **threadConfigs;
 pthread_barrier_t barrier;
 
 void *start_test(int my_thread_rank) {
-    pthread_barrier_wait(&barrier);
+    //gets current working directory
+    char cwd[PATH_MAX];
+    getcwd(cwd, sizeof(cwd));
+
+    //pthread_barrier_wait(&barrier);
     char normalized_rank[18];
-    char target_file[42];
-    char url[72];
-    char dir[18];
+    char url[45];
 
-    sprintf(dir, "results/%d", startTimeStamp);
+    //char url[72];
+    char *target_file;
+    char *dir;
+
+
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
-    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
-    sprintf(target_file, "results/%d/%s.txt", startTimeStamp, normalized_rank);
+    sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
+//    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
 
-    mkdir("results", 0777);
-    mkdir(dir, 0777);
+    printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
+
+        dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(cwd)));
+
+    target_file = (char *) malloc(sizeof(char) * (42 + 1 + strlen(cwd)));
+
+
+    sprintf(dir, "%s/results/%d", cwd, startTimeStamp);
+    sprintf(target_file, "%s/%s.txt", dir, normalized_rank);
+
+    if (my_rank == 0) {
+        mkdir("results", 0777);
+        mkdir(dir, 0777);
+    }
+    MPI_Barrier(MPI_COMM_WORLD);
 
     printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
     //TODO - in production change to a while loop
