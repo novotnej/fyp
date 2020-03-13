@@ -168,3 +168,5 @@ vendor/*
 
 config.py
 raspi/config.py
+experiment/mpiexec
+results
