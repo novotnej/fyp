@@ -4,6 +4,7 @@
 #include "url2file.c"
 #include <time.h>
 #include <pthread.h>
+#include <unistd.h>
 
 int my_rank;
 
@@ -31,6 +32,7 @@ int threadsPerCore;
 int coreCount;
 int startTimeStamp;
 int downloadIterations;
+int sleepTime;
 // Get the name of the processor
 char my_name[MPI_MAX_PROCESSOR_NAME];
 int name_len;
@@ -48,16 +50,16 @@ void *start_test(int my_thread_rank) {
 
     //pthread_barrier_wait(&barrier);
     char normalized_rank[18];
-    char url[45];
+    //char url[45];
 
-    //char url[72];
+    char url[72];
     char *target_file;
     char *dir;
 
 
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
     sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
-//    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
+    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
 
     printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
 
@@ -81,10 +83,12 @@ void *start_test(int my_thread_rank) {
         int i;
         for (i = 0; i < downloadIterations; i++) {
             download_url(url, target_file);
+            sleep(sleepTime);
         }
     } else {
         while(1) {
             download_url(url, target_file);
+            sleep(sleepTime);
         }
     }
 }
@@ -137,6 +141,7 @@ int main(int argc, char **argv) {
     //initial configuration from received arguments
     contentLength = atoi(argv[1]);
     downloadIterations = atoi(argv[2]);
+    sleepTime = atoi(argv[3]);
 
     /* Initialize the infrastructure necessary for communication */
     MPI_Init(&argc, &argv);
