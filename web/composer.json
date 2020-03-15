@@ -11,15 +11,17 @@
 	],
 	"require": {
 		"php": ">= 7.2",
-		"nette/nette" : "2.4",
+		"nette/nette" : "~2.4",
 		"nextras/forms": "^2.0@dev",
 		"nextras/orm": "^4.0@dev",
 		"ublaboo/datagrid": "^5.7@dev",
-		"kdyby/console" : "2.7@dev",
+		"kdyby/console" : "2.7.1",
 		"janmarek/webloader": "^2.4@dev",
 		"contributte/recaptcha" : "3.1@dev",
 		"gamee/nette-rabbitmq": "^3.3",
-      "ext-json": "*"
+      "ext-json": "*",
+		"elasticsearch/elasticsearch": "6.5.0",
+		"kdyby/elastic-search": "2.0"
     },
 	"minimum-stability": "dev"
 }

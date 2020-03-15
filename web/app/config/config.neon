@@ -17,6 +17,10 @@ extensions:
 	console: Kdyby\Console\DI\ConsoleExtension
 	recaptcha: Contributte\ReCaptcha\DI\ReCaptchaExtension
 	rabbitmq: Gamee\RabbitMQ\DI\RabbitMQExtension
+	elasticSearch: Kdyby\ElasticSearch\DI\SearchExtension
+
+elasticSearch:
+    host: dissdatabase.profisites.com
 
 rabbitmq:
 	connections:
@@ -56,7 +60,11 @@ orm:
 
 session:
 	expiration: 14 days
-
+console:
+	url: https://harambe.com
+decorator:
+    Symfony\Component\Console\Command\Command:
+        tags: [kdyby.console.command]
 
 services:
 	mailerService:
@@ -66,7 +74,9 @@ services:
 	router: App\RouterFactory::createRouter
 	authenticator: App\Services\Authenticator
 	- App\Components\SignIn\ISignInComponentFactory
+	- App\Services\ElasticService
 	- App\Components\Queues\IQueueEditFormFactory
 	- App\Components\Queues\IDeviceEditFormFactory
 	- App\Components\Messages\ISendMessageFormFactory
 	- App\Services\QueueService(@App\Repositories\QueuesRepository, @Gamee\RabbitMQ\Client::getProducer(messagesProducer))
+	- App\Console\MigrateResultsToElasticCommand

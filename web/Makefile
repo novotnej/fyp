@@ -7,7 +7,7 @@ docker-build:
 	docker build --build-arg USER_ID=`id -u docker` -t novotnej/fyp_web .
 
 docker-web:
-	docker run --name fyp_web -d -h=`hostname` --restart=always -v `pwd`:/var/www -p 80:80 novotnej/fyp_web
+	docker run --name fyp_web -d -h=`hostname` --restart=always -v `pwd`:/var/www -v `pwd`/../experiment/results:/var/www/results -p 80:80 novotnej/fyp_web
 
 docker-composer-install:
 	docker run --rm -it -v `pwd`:/var/www -v ~/.composer:/home/harambe/.composer profisites/harambe composer install
