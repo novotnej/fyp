@@ -48,6 +48,11 @@ u64 get_time_stamp() {
     return (1000000*tv.tv_sec) + tv.tv_usec;
 }
 
+void downloader_cleanup() {
+    fclose(pagefile);
+    curl_easy_cleanup(curl_handle);
+    curl_global_cleanup();
+}
 
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     end_time_stamp = get_time_stamp();
@@ -57,7 +62,7 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     fwrite(&nl, sizeof(char), strlen((const char *) &nl), (FILE *) stream);
     written+= strlen((const char *) &nl);
     //printf("Duration: %lld %lld %lld \n", end_time_stamp, start_time_stamp, (end_time_stamp - start_time_stamp));
-
+    //downloader_cleanup();
     return written;
 }
 
@@ -108,8 +113,3 @@ void download_url(char url[], char filename[]) {
 
 }
 
-void downloader_cleanup() {
-    fclose(pagefile);
-    curl_easy_cleanup(curl_handle);
-    curl_global_cleanup();
-}

@@ -3,32 +3,11 @@
 #include <mpi.h>
 #include "url2file.c"
 #include <time.h>
-#include <pthread.h>
 #include <unistd.h>
 
 int my_rank;
 
-int **alloc_2d_int(int rows, int cols) {
-    int *data = (int *)malloc(rows*cols*sizeof(int));
-    int **ar= (int **)malloc(rows*sizeof(int*));
-    int i;
-    for (i=0; i<rows; i++)
-        ar[i] = &(data[cols*i]);
-
-    return ar;
-}
-
-int *alloc_1d_int(int cols) {
-    int *ar= (int *)malloc(cols*sizeof(int));
-    int i;
-    for (i=0; i<cols; i++)
-        ar[i] = 0;
-
-    return ar;
-}
-
 int contentLength;
-int threadsPerCore;
 int coreCount;
 int startTimeStamp;
 int downloadIterations;
@@ -37,18 +16,11 @@ int sleepTime;
 char my_name[MPI_MAX_PROCESSOR_NAME];
 int name_len;
 
-
-pthread_t *threads;
-int **threadConfigs;
-
-pthread_barrier_t barrier;
-
 void *start_test(int my_thread_rank) {
     //gets current working directory
     char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
 
-    //pthread_barrier_wait(&barrier);
     char normalized_rank[18];
     //char url[45];
 
@@ -58,13 +30,11 @@ void *start_test(int my_thread_rank) {
 
 
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
-    sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
+    //sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
     sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
 
     printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
-
-        dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(cwd)));
-
+    dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(cwd)));
     target_file = (char *) malloc(sizeof(char) * (42 + 1 + strlen(cwd)));
 
 
@@ -93,33 +63,6 @@ void *start_test(int my_thread_rank) {
     }
 }
 
-void create_subthreads(int n) {
-    int i;
-    if (n < 1) {
-        n = 1;
-    }
-    threadConfigs = alloc_2d_int(n, 1);
-    threads = malloc(n * sizeof(pthread_t));
-
-    pthread_barrier_init(&barrier, NULL, n);
-
-    for (i = 0; i < n; i++) {
-        threadConfigs[i][0] = i;
-    }
-
-    for (i = 1; i < n; i++) { //start at 1, the first thread will be the main thread
-        pthread_create(&threads[i], NULL, (void*) start_test, (int*) i);
-    }
-
-    start_test(0);
-
-    for (i = 1; i < n; i++) { //start at 1, the first thread will be the main thread
-        pthread_join(threads[i], NULL);
-    }
-
-    pthread_barrier_destroy(&barrier);
-}
-
 void init_test() {
     if (my_rank == 0) {
         startTimeStamp = (int)time(NULL);
@@ -128,8 +71,7 @@ void init_test() {
     //broadcast timestamp - this is used to identify individual runs of the experiment
     MPI_Bcast(&startTimeStamp, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
-    //create pthreads
-    create_subthreads(threadsPerCore);
+    start_test(0);
 }
 
 /**
@@ -139,9 +81,21 @@ void init_test() {
  */
 int main(int argc, char **argv) {
     //initial configuration from received arguments
-    contentLength = atoi(argv[1]);
-    downloadIterations = atoi(argv[2]);
-    sleepTime = atoi(argv[3]);
+    if (argc > 1) {
+        contentLength = atoi(argv[1]);
+    } else {
+        contentLength = 100;
+    }
+    if (argc > 2) {
+        downloadIterations = atoi(argv[2]);
+    } else {
+        downloadIterations = 10;
+    }
+    if (argc > 3) {
+        sleepTime = atoi(argv[3]);
+    } else {
+        sleepTime = 1;
+    }
 
     /* Initialize the infrastructure necessary for communication */
     MPI_Init(&argc, &argv);
