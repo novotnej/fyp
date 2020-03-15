@@ -64,12 +64,12 @@ void *start_test(int my_thread_rank) {
         int i;
         for (i = 0; i < downloadIterations; i++) {
             download_url(url, target_file);
-            sleep(sleepTime);
+            usleep(sleepTime);
         }
     } else {
         while(1) {
             download_url(url, target_file);
-            sleep(sleepTime);
+            usleep(sleepTime);
         }
     }
 }
@@ -105,7 +105,7 @@ int main(int argc, char **argv) {
     if (argc > 3) {
         sleepTime = atoi(argv[3]);
     } else {
-        sleepTime = 1;
+        sleepTime = 1000;
     }
 
     /* Initialize the infrastructure necessary for communication */
