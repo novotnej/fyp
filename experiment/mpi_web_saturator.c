@@ -16,9 +16,19 @@ int sleepTime;
 char my_name[MPI_MAX_PROCESSOR_NAME];
 int name_len;
 
+char cwd[PATH_MAX];
+
+void save_config() {
+    char *config_file = (char *) malloc(sizeof(char) * (30 + strlen(cwd)));
+    sprintf(config_file, "%s/results/%d/config.json", cwd, startTimeStamp);
+    FILE *f = fopen(config_file, "w");
+    fprintf(f, "{\"timestamp\": %d, \"iterations\": %d, \"sleep\": %d, \"threads\": %d, \"length\" : %d}", startTimeStamp, downloadIterations, sleepTime, coreCount, contentLength);
+    fclose(f);
+}
+
+
 void *start_test(int my_thread_rank) {
     //gets current working directory
-    char cwd[PATH_MAX];
     getcwd(cwd, sizeof(cwd));
 
     char normalized_rank[18];
@@ -33,7 +43,7 @@ void *start_test(int my_thread_rank) {
     //sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
     sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
 
-    printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
+    //printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
     dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(cwd)));
     target_file = (char *) malloc(sizeof(char) * (42 + 1 + strlen(cwd)));
 
@@ -44,6 +54,7 @@ void *start_test(int my_thread_rank) {
     if (my_rank == 0) {
         mkdir("results", 0777);
         mkdir(dir, 0777);
+        save_config();
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
