@@ -75,8 +75,10 @@ services:
 	authenticator: App\Services\Authenticator
 	- App\Components\SignIn\ISignInComponentFactory
 	- App\Services\ElasticService
+	- App\Services\ResultService
 	- App\Components\Queues\IQueueEditFormFactory
 	- App\Components\Queues\IDeviceEditFormFactory
 	- App\Components\Messages\ISendMessageFormFactory
 	- App\Services\QueueService(@App\Repositories\QueuesRepository, @Gamee\RabbitMQ\Client::getProducer(messagesProducer))
 	- App\Console\MigrateResultsToElasticCommand
+	- App\Console\CalculateAverageFromExperimentCommand

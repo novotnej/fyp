@@ -1,0 +1,11 @@
+dbal:
+	driver: mysqli
+	host: dissdatabase.profisites.com
+	database: fyp
+	username: root
+	password: dissertation
+	port: 3306
+
+parameters:
+	recaptchaSiteKey: ''
+	recaptchaSecretKey: ''
