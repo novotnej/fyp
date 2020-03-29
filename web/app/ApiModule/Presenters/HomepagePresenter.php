@@ -20,14 +20,15 @@ class HomepagePresenter extends BasePresenter {
                     "start" => $startTime,
                     "content" => $content,
                     "end" => $end,
-                    "duration" => $duration
+                    "duration" => $duration,
+                    "timestamp" => time()
                 );
                 $this->getHttpResponse()->setContentType("text/json");
                 print(json_encode($response));
                 break;
             default:
                 $this->getHttpResponse()->setContentType("text/plain");
-                print($client . "|" . $startTime . "|" . $end . "|" . $duration);
+                print($client . "|" . $startTime . "|" . $end . "|" . $duration . "|" . time());
                 //print(PHP_EOL);
                 //print($content);
                 break;
