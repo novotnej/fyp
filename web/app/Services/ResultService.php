@@ -6,6 +6,8 @@ use App\Model\Experiment;
 use App\Model\Thread;
 use App\Model\ThreadRun;
 use App\Repositories\ExperimentRepository;
+use App\Repositories\ThreadRepository;
+use App\Repositories\ThreadRunRepository;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Finder;
 use SplFileInfo;
@@ -16,13 +18,21 @@ class ResultService extends CommonService {
     protected $output;
     /** @var ExperimentRepository  */
     protected $experimentRepository;
+    /** @var ThreadRunRepository  */
+    protected $threadRunRepository;
+    /** @var ThreadRepository  */
+    protected $threadRepository;
 
     /**
      * ResultService constructor.
      * @param ExperimentRepository $experimentRepository
+     * @param ThreadRunRepository $threadRunRepository
+     * @param ThreadRepository $threadRepository
      */
-    public function __construct(ExperimentRepository $experimentRepository) {
+    public function __construct(ExperimentRepository $experimentRepository, ThreadRunRepository $threadRunRepository, ThreadRepository $threadRepository) {
         $this->experimentRepository = $experimentRepository;
+        $this->threadRepository = $threadRepository;
+        $this->threadRunRepository = $threadRunRepository;
     }
 
     protected function getThread(SplFileInfo $resultFile) {
@@ -61,8 +71,11 @@ class ResultService extends CommonService {
         foreach (Finder::findFiles("$resultKey-*.txt")->from($resultDir->getRealPath()) as $resultFile) {
             /** @var SplFileInfo $resultFile  */
             $thread = $this->getThread($resultFile);
+            $thread->experiment = $experiment;
+            $thread = $this->threadRepository->persist($thread);
             $experiment->threads->add($thread);
         }
+        $this->threadRepository->flush();
         return $experiment;
     }
 
@@ -89,7 +102,7 @@ class ResultService extends CommonService {
                 $experiment->iterations = $config->iterations;
                 $experiment->time = $dt;
                 $experiment = $this->calculateThreads($experiment, $resultDir);
-                $this->experimentRepository->persistAndFlush($experiment);
+                $this->experimentRepository->persistAndFlush($experiment, true);
                 $runs[] = $experiment;
             } catch (\Exception $e) {
                 //TODO - error handling into output here
