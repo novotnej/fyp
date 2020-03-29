@@ -5,6 +5,7 @@ use Nextras\Orm\Relationships\OneHasMany;
 
 /**
  * Class Experiment
+ * time values (except timestamps) are in microseconds (usec)
  * @package App\Model
  * @property string $name
  * @property \DateTimeImmutable $time
@@ -14,17 +15,35 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property int $threadCount
  * @property int $contentLength
  * @property OneHasMany|Thread[] $threads {1:m Thread::$experiment}
+ * @property OneHasMany|Vmstat[] $vmstats {1:m Vmstat::$experiment}
  * @property double $averageServerTime {virtual}
  * @property double $averageTotalTime {virtual}
  * @property double $averageNetworkLatency {virtual}
  */
 class Experiment extends CommonModel {
+
     public function getterAverageTotalTime() {
-        return rand();
+        $runCount = 0;
+        $time = 0;
+        foreach ($this->threads as $thread) {
+            foreach ($thread->runs as $run) {
+                $runCount++;
+                $time+=$run->localDuration;
+            }
+        }
+        return $time/$runCount;
     }
 
     public function getterAverageServerTime() {
-        return rand();
+        $runCount = 0;
+        $time = 0;
+        foreach ($this->threads as $thread) {
+            foreach ($thread->runs as $run) {
+                $runCount++;
+                $time+=$run->serverDuration;
+            }
+        }
+        return $time/$runCount;
     }
 
     public function getterAverageNetworkLatency() {

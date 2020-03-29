@@ -11,7 +11,7 @@ use Nextras\Orm\Relationships\ManyHasOne;
  * @property \DateTimeImmutable $time
  * @property ManyHasOne|Thread $thread {m:1 Thread::$runs}
  * @property int $localDuration
- * @property int $serverDuration
+ * @property double $serverDuration
  */
 class ThreadRun extends CommonModel {
 

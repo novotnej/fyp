@@ -8,6 +8,7 @@ use App\Repositories\QueuesRepository;
 use App\Repositories\ThreadRepository;
 use App\Repositories\ThreadRunRepository;
 use App\Repositories\UsersRepository;
+use App\Repositories\VmstatRepository;
 use Nextras\Orm\Model\Model;
 
 /**
@@ -20,6 +21,7 @@ use Nextras\Orm\Model\Model;
  * @property-read ThreadRepository $threads
  * @property-read ThreadRunRepository $threadRuns
  * @property-read ExperimentRepository $experiments
+ * @property-read VmstatRepository $vmstats
  */
 class OrmService extends Model {
 
