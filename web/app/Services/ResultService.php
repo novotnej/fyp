@@ -143,6 +143,37 @@ class ResultService extends CommonService {
         return $experiment;
     }
 
+    protected function writeResultsToFile(string $name, $results) {
+        $statFileName = APP_DIR."/../results/".$name.".csv";
+
+        $list = array();
+        $list[0] = ["Content Length", "Server time (ms)", "Total time (ms)", "Network Latency (ms)", "Free", "Buff", "Cache", "User", "System", "Idle"];
+        /** @var Experiment $result */
+        foreach ($results as $result) {
+            $list[$result->contentLength] = [
+                $result->contentLength,
+                $result->averageServerTime/1000,
+                $result->averageTotalTime/1000,
+                $result->averageNetworkLatency/1000,
+                $result->averageVmStat->free,
+                $result->averageVmStat->buff,
+                $result->averageVmStat->cache,
+                $result->averageVmStat->user,
+                $result->averageVmStat->system,
+                $result->averageVmStat->idle
+            ];
+        }
+
+        ksort($list);
+
+        $fp = fopen($statFileName, 'w');
+
+        foreach ($list as $fields) {
+            fputcsv($fp, $fields);
+        }
+
+        fclose($fp);
+    }
 
     public function calculateAverages(OutputInterface $o, $experimentName) {
         $runs = [];
@@ -175,6 +206,8 @@ class ResultService extends CommonService {
                 $o->writeln($e->getMessage());
             }
         }
+
+        $this->writeResultsToFile($experimentName, $runs);
 
         return $runs;
     }

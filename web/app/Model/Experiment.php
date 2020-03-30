@@ -16,11 +16,39 @@ use Nextras\Orm\Relationships\OneHasMany;
  * @property int $contentLength
  * @property OneHasMany|Thread[] $threads {1:m Thread::$experiment}
  * @property OneHasMany|Vmstat[] $vmstats {1:m Vmstat::$experiment}
- * @property double $averageServerTime {virtual}
- * @property double $averageTotalTime {virtual}
- * @property double $averageNetworkLatency {virtual}
+ * @property-read double $averageServerTime {virtual}
+ * @property-read double $averageTotalTime {virtual}
+ * @property-read double $averageNetworkLatency {virtual}
+ * @property-read Vmstat $averageVmStat {virtual}
  */
 class Experiment extends CommonModel {
+
+    /** @var Vmstat */
+    private $avgVmStat;
+
+    public function getterAverageVmStat() {
+        if (!$this->avgVmStat) {
+            $this->avgVmStat = new Vmstat();
+
+            foreach ($this->vmstats as $vmstat) {
+                $this->avgVmStat->free += $vmstat->free;
+                $this->avgVmStat->buff += $vmstat->buff;
+                $this->avgVmStat->cache += $vmstat->cache;
+                $this->avgVmStat->system += $vmstat->system;
+                $this->avgVmStat->idle += $vmstat->idle;
+                $this->avgVmStat->user += $vmstat->user;
+            }
+            $this->avgVmStat->free = (int) $this->avgVmStat->free / count($this->vmstats);
+            $this->avgVmStat->buff = (int) $this->avgVmStat->buff / count($this->vmstats);
+            $this->avgVmStat->cache = (int) $this->avgVmStat->cache / count($this->vmstats);
+            $this->avgVmStat->system = (int) $this->avgVmStat->system / count($this->vmstats);
+            $this->avgVmStat->idle = (int) $this->avgVmStat->idle / count($this->vmstats);
+            $this->avgVmStat->user = (int) $this->avgVmStat->user / count($this->vmstats);
+        }
+
+        return $this->avgVmStat;
+    }
+
 
     public function getterAverageTotalTime() {
         $runCount = 0;
