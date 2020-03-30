@@ -24,10 +24,12 @@ class HomepagePresenter extends BasePresenter {
                     "timestamp" => time()
                 );
                 $this->getHttpResponse()->setContentType("application/json");
+                $this->getHttpResponse()->setExpiration(10);
                 print(json_encode($response));
                 break;
             default:
                 $this->getHttpResponse()->setContentType("text/plain");
+                $this->getHttpResponse()->setExpiration(10);
                 print($client . "|" . $startTime . "|" . $end . "|" . $duration . "|" . time());
                 //print(PHP_EOL);
                 //print($content);
