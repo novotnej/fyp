@@ -9,12 +9,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CalculateAverageFromExperimentCommand extends Command {
-    const ARG_EXPERIMENT = "experiment";
+    const   ARG_EXPERIMENT  = "experiment",
+            ARG_STAT_FILE   = "stat_file";
 
     protected function configure() {
         $this->setName('app:calculateAverageFromExperiment')
             ->setDescription('Calculate average execution times from an experiment')
             ->addArgument(self::ARG_EXPERIMENT, InputArgument::REQUIRED, 'Name of the experiment (directory within results)')
+            ->addArgument(self::ARG_STAT_FILE, InputArgument::OPTIONAL, 'Name of the vmstat file', "vmstat.txt")
         ;
     }
 
@@ -27,8 +29,9 @@ class CalculateAverageFromExperimentCommand extends Command {
         $this->resultService = $this->getHelper("container")->getByType("App\Services\ResultService");
         $this->output = $output;
         $experiment = $input->getArgument(self::ARG_EXPERIMENT);
+        $statFile = $input->getArgument(self::ARG_STAT_FILE);
         /** @var Experiment $result */
-        $results = $this->resultService->calculateAverages($output, $experiment);
+        $results = $this->resultService->calculateAverages($output, $experiment, $statFile);
         $output->writeln("Experiment: " . $result->name);
         foreach ($results as $result) {
             $output->writeln("Threads:$result->threadCount;Iterations:$result->iterations;Sleep:$result->sleep;ContentLength:$result->contentLength;AVGSRV:$result->averageServerTime;AVGTOT:$result->averageTotalTime;AVGLAT:$result->averageNetworkLatency");

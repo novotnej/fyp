@@ -102,8 +102,8 @@ class ResultService extends CommonService {
 
     protected $vmstat = [];
 
-    protected function processVmstat($o) {
-        $statFileName = APP_DIR."/../results/vmstat.txt";
+    protected function processVmstat($o, $statFile) {
+        $statFileName = APP_DIR."/../results/" . $statFile;
         $fh = fopen($statFileName, "r");
         while(!feof($fh)) {
             $line = fgets($fh);
@@ -147,11 +147,13 @@ class ResultService extends CommonService {
         $statFileName = APP_DIR."/../results/".$name.".csv";
 
         $list = array();
-        $list[0] = ["Content Length", "Server time (ms)", "Total time (ms)", "Network Latency (ms)", "Free", "Buff", "Cache", "User", "System", "Idle"];
+        $list[0] = ["Content Length", "Thread count", "Sleep (ms)", "Server time (ms)", "Total time (ms)", "Network Latency (ms)", "Free", "Buff", "Cache", "User", "System", "Idle"];
         /** @var Experiment $result */
         foreach ($results as $result) {
-            $list[$result->contentLength] = [
+            $list[$result->threadCount] = [
                 $result->contentLength,
+                $result->threadCount,
+                $result->sleep / 1000,
                 $result->averageServerTime/1000,
                 $result->averageTotalTime/1000,
                 $result->averageNetworkLatency/1000,
@@ -175,9 +177,9 @@ class ResultService extends CommonService {
         fclose($fp);
     }
 
-    public function calculateAverages(OutputInterface $o, $experimentName) {
+    public function calculateAverages(OutputInterface $o, $experimentName, $statFile) {
         $runs = [];
-        $this->processVmstat($o);
+        $this->processVmstat($o, $statFile);
         foreach (Finder::findDirectories("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]")->from(APP_DIR."/../results/". $experimentName) as $resultDir) {
             /** @var SplFileInfo $resultDir  */
             $configFileName = $resultDir->getRealPath()."/config.json";
