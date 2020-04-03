@@ -25,7 +25,7 @@ void save_config() {
     char *config_file = (char *) malloc(sizeof(char) * (30 + strlen(experimentName) + strlen(cwd)));
 
     sprintf(config_file, "%s/results/%s/%d/config.json", cwd, experimentName, startTimeStamp);
-    printf("EXP: %s\n", config_file);
+    //printf("EXP: %s\n", config_file);
     FILE *f = fopen(config_file, "w");
     fprintf(f, "{\"timestamp\": %d, \"iterations\": %d, \"sleep\": %d, \"threads\": %d, \"length\" : %d}", startTimeStamp, downloadIterations, sleepTime, coreCount, contentLength);
     fclose(f);
@@ -70,7 +70,7 @@ void *start_test(int my_thread_rank) {
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
-    printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
+    //printf("rank: %d - %d, node %s, timestamp: %d, client: %s\n", my_rank, my_thread_rank, my_name, startTimeStamp, normalized_rank);
     //TODO - in production change to a while loop
     if (downloadIterations > 0) {
         int i;
@@ -89,6 +89,7 @@ void *start_test(int my_thread_rank) {
 void init_test() {
     if (my_rank == 0) {
         startTimeStamp = (int)time(NULL);
+        printf("Time: %d; Length: %d; Iter: %d; Sleep: %d; Name: %s\n", startTimeStamp, contentLength, downloadIterations, sleepTime, experimentName);
         //TODO - log run configuration?
     }
     //broadcast timestamp - this is used to identify individual runs of the experiment
