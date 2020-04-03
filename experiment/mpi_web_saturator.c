@@ -4,6 +4,7 @@
 #include "url2file.c"
 #include <time.h>
 #include <unistd.h>
+#include <libgen.h>
 
 int my_rank;
 
@@ -12,6 +13,8 @@ int coreCount;
 int startTimeStamp;
 int downloadIterations;
 int sleepTime;
+char *experimentName;
+
 // Get the name of the processor
 char my_name[MPI_MAX_PROCESSOR_NAME];
 int name_len;
@@ -19,13 +22,14 @@ int name_len;
 char cwd[PATH_MAX];
 
 void save_config() {
-    char *config_file = (char *) malloc(sizeof(char) * (30 + strlen(cwd)));
-    sprintf(config_file, "%s/results/%d/config.json", cwd, startTimeStamp);
+    char *config_file = (char *) malloc(sizeof(char) * (30 + strlen(experimentName) + strlen(cwd)));
+
+    sprintf(config_file, "%s/results/%s/%d/config.json", cwd, experimentName, startTimeStamp);
+    printf("EXP: %s\n", config_file);
     FILE *f = fopen(config_file, "w");
     fprintf(f, "{\"timestamp\": %d, \"iterations\": %d, \"sleep\": %d, \"threads\": %d, \"length\" : %d}", startTimeStamp, downloadIterations, sleepTime, coreCount, contentLength);
     fclose(f);
 }
-
 
 void *start_test(int my_thread_rank) {
     //gets current working directory
@@ -44,15 +48,22 @@ void *start_test(int my_thread_rank) {
     sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
 
     //printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
-    dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(cwd)));
-    target_file = (char *) malloc(sizeof(char) * (42 + 1 + strlen(cwd)));
+    dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(experimentName) + strlen(cwd)));
+    target_file = (char *) malloc(sizeof(char) * (42 + 1 + strlen(experimentName) + strlen(cwd)));
 
 
-    sprintf(dir, "%s/results/%d", cwd, startTimeStamp);
+    sprintf(dir, "%s/results/%s/%d", cwd, experimentName, startTimeStamp);
+
     sprintf(target_file, "%s/%s.txt", dir, normalized_rank);
 
     if (my_rank == 0) {
         mkdir("results", 0777);
+
+        char *exp_dir = (char *) malloc(sizeof(char) * (8 + strlen(experimentName)));
+        sprintf(exp_dir, "results/%s", experimentName);
+
+        mkdir(exp_dir, 0777);
+
         mkdir(dir, 0777);
         save_config();
     }
@@ -106,6 +117,13 @@ int main(int argc, char **argv) {
         sleepTime = atoi(argv[3]);
     } else {
         sleepTime = 1000;
+    }
+    if (argc > 4) {
+        experimentName = (char *) malloc(sizeof(char) * (strlen(argv[4])));
+        sprintf(experimentName, "%s", argv[4]);
+    } else {
+        experimentName = (char *) malloc(sizeof(char) * 4);
+        sprintf(experimentName, "%s", "temp");
     }
 
     /* Initialize the infrastructure necessary for communication */
