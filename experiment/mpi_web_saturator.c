@@ -38,14 +38,15 @@ void *start_test(int my_thread_rank) {
     char normalized_rank[18];
     //char url[45];
 
-    char url[72];
+    char *url;
     char *target_file;
     char *dir;
 
+    url = (char *) malloc(sizeof(char) * (53 + strlen(my_name)));
 
     sprintf(normalized_rank, "%d-%04d-%03d", startTimeStamp, my_rank, my_thread_rank);
     //sprintf(url, "https://people.bath.ac.uk/jn475/00000200.txt");
-    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", normalized_rank, contentLength);
+    sprintf(url, "http://dissertation.profisites.com/api/%s/%08d.txt", my_name, contentLength);
 
     //printf("Size: %lu, %lu, CWD: %s \n", sizeof(cwd), strlen(cwd), cwd);
     dir = (char *) malloc(sizeof(char) * (18 + 1 + strlen(experimentName) + strlen(cwd)));
