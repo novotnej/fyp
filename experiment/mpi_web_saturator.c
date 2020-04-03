@@ -89,7 +89,7 @@ void *start_test(int my_thread_rank) {
 void init_test() {
     if (my_rank == 0) {
         startTimeStamp = (int)time(NULL);
-        printf("Time: %d; Length: %d; Iter: %d; Sleep: %d; Name: %s\n", startTimeStamp, contentLength, downloadIterations, sleepTime, experimentName);
+        printf("Threads: %d; Time: %d; Length: %d; Iter: %d; Sleep: %d; Name: %s\n", coreCount, startTimeStamp, contentLength, downloadIterations, sleepTime, experimentName);
         //TODO - log run configuration?
     }
     //broadcast timestamp - this is used to identify individual runs of the experiment
