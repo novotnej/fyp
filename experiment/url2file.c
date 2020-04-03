@@ -36,7 +36,7 @@
 int is_setup = 0;
 CURL *curl_handle;
 FILE *pagefile;
-char nl[] = "\n";
+char nl[] = "|00000000\n";
 
 typedef long long u64;
 
@@ -68,7 +68,7 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
 
 
 void setup(char url[], char filename[]) {
-    printf("%s \n", url);
+    //printf("%s \n", url);
     is_setup = 1;
 
     curl_global_init(CURL_GLOBAL_ALL);
