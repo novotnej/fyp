@@ -1,0 +1,1 @@
+docker run -it -v ${PWD}:/root -t dockermpi:latest /root/run_server_mpi.sh
