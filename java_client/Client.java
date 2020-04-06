@@ -54,11 +54,20 @@ class Client {
                 new FileWriter("./results/" + startTimeStamp[0] + "/" + normalizedName + ".txt", true)  //Set true for append mode
         );
 
-        System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+        try {
+            System.out.println(MPI.COMM_WORLD.getRank() + "@" + MPI.getProcessorName() + " - Waiting for messages");
+        } catch (MPIException e) {
+            e.printStackTrace();
+        }
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(delivery.getBody(), "UTF-8");
 
             if (message.equals("FINAL_MESSAGE")) {
+                try {
+                    System.out.println(MPI.COMM_WORLD.getRank() + "@" + MPI.getProcessorName() + " - Received '" + message + "'");
+                } catch (MPIException e) {
+                    e.printStackTrace();
+                }
                 channel.basicCancel(consumerTag);
                 writer.close();
                 try {
@@ -71,8 +80,6 @@ class Client {
                 writer.newLine();
                 writer.write(message + "|" + java.lang.System.currentTimeMillis());
             }
-
-            System.out.println(" [x] Received '" + message + "'");
         };
         consumerTag = channel.basicConsume(MPI.getProcessorName(), true, deliverCallback, consumerTag -> { });
     }
