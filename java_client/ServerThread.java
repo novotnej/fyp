@@ -34,8 +34,9 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
+        System.out.println("Q: " + queueName + ", REP: " + 0);
         for (int i = 0; i < repeats; i++) {
-            System.out.println("Q: " + queueName + ", REP: " + i);
+            //System.out.println("Q: " + queueName + ", REP: " + i);
             startTime = java.lang.System.currentTimeMillis();
             String randomMessage = randomAlphaNumeric(contentLength);
             endTime = java.lang.System.currentTimeMillis();
