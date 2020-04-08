@@ -1,0 +1,148 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (mmap) failed to map 131072 bytes for committing reserved memory.
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   The process is running with CompressedOops enabled, and the Java Heap may be blocking the growth of the native heap
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+#   JVM is running with Unscaled Compressed Oops mode in which the Java heap is
+#     placed in the first 4GB address space. The Java Heap base address is the
+#     maximum limit for the native heap growth. Please use -XX:HeapBaseMinAddress
+#     to set the Java Heap base and to place the Java Heap above 4GB virtual address.
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (os_linux.cpp:2757), pid=7862, tid=0x00007fbeac14d700
+#
+# JRE version: OpenJDK Runtime Environment (8.0_242-b08) (build 1.8.0_242-8u242-b08-0ubuntu3~18.04-b08)
+# Java VM: OpenJDK 64-Bit Server VM (25.242-b08 mixed mode linux-amd64 compressed oops)
+# Failed to write core dump. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00007fbee84ae800):  JavaThread "AMQP Connection 68.183.253.43:5672" [_thread_in_vm, id=8241, stack(0x00007fbeac04d000,0x00007fbeac14e000)]
+
+Stack: [0x00007fbeac04d000,0x00007fbeac14e000],  sp=0x00007fbeac147f20,  free space=1003k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [libjvm.so+0xabba52]
+V  [libjvm.so+0x4de2e7]
+V  [libjvm.so+0x8f59f0]
+V  [libjvm.so+0x8ecabe]
+V  [libjvm.so+0xab8220]
+V  [libjvm.so+0x86dc39]
+V  [libjvm.so+0x86f96f]
+V  [libjvm.so+0x87026b]
+V  [libjvm.so+0x870e42]
+V  [libjvm.so+0x636a1c]
+V  [libjvm.so+0x4377f8]
+V  [libjvm.so+0xa259c7]
+V  [libjvm.so+0x6c9d8c]
+V  [libjvm.so+0x6cb77b]  JVM_DefineClassWithSource+0x8b
+C  [libjava.so+0xd98d]  Java_java_lang_ClassLoader_defineClass1+0x17d
+j  java.lang.ClassLoader.defineClass1(Ljava/lang/String;[BIILjava/security/ProtectionDomain;Ljava/lang/String;)Ljava/lang/Class;+0
+j  java.lang.ClassLoader.defineClass(Ljava/lang/String;[BIILjava/security/ProtectionDomain;)Ljava/lang/Class;+27
+j  java.security.SecureClassLoader.defineClass(Ljava/lang/String;[BIILjava/security/CodeSource;)Ljava/lang/Class;+12
+j  java.net.URLClassLoader.defineClass(Ljava/lang/String;Lsun/misc/Resource;)Ljava/lang/Class;+138
+J 359 C1 java.net.URLClassLoader$1.run()Ljava/lang/Class; (63 bytes) @ 0x00007fbed91d2c9c [0x00007fbed91d29e0+0x2bc]
+J 358 C1 java.net.URLClassLoader$1.run()Ljava/lang/Object; (5 bytes) @ 0x00007fbed91d264c [0x00007fbed91d25c0+0x8c]
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68488a]
+V  [libjvm.so+0x6da110]  JVM_DoPrivileged+0x550
+J 372  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object; (0 bytes) @ 0x00007fbed91d3f95 [0x00007fbed91d3ec0+0xd5]
+J 357 C1 java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class; (47 bytes) @ 0x00007fbed91d1784 [0x00007fbed91d1600+0x184]
+J 168 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (122 bytes) @ 0x00007fbed916c39c [0x00007fbed916ba40+0x95c]
+J 378 C1 sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (85 bytes) @ 0x00007fbed91e24cc [0x00007fbed91e1b40+0x98c]
+J 377 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; (7 bytes) @ 0x00007fbed91de604 [0x00007fbed91de500+0x104]
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68488a]
+V  [libjvm.so+0x681e6b]
+V  [libjvm.so+0x6824d4]
+V  [libjvm.so+0xa2c0a4]
+V  [libjvm.so+0xa2aa2b]
+V  [libjvm.so+0xa2c98c]
+V  [libjvm.so+0xa96b1d]
+V  [libjvm.so+0xa9b384]
+V  [libjvm.so+0xaa270c]
+V  [libjvm.so+0xaa7e30]
+V  [libjvm.so+0xaa848b]
+V  [libjvm.so+0x6375d4]
+V  [libjvm.so+0x63dab7]
+V  [libjvm.so+0x63e020]
+V  [libjvm.so+0x7b4c00]
+V  [libjvm.so+0x7b96ee]
+V  [libjvm.so+0x7bc570]
+V  [libjvm.so+0x677a03]
+j  com.rabbitmq.client.impl.CommandAssembler.consumeMethodFrame(Lcom/rabbitmq/client/impl/Frame;)V+13
+j  com.rabbitmq.client.impl.CommandAssembler.handleFrame(Lcom/rabbitmq/client/impl/Frame;)Z+38
+j  com.rabbitmq.client.impl.AMQCommand.handleFrame(Lcom/rabbitmq/client/impl/Frame;)Z+5
+j  com.rabbitmq.client.impl.AMQChannel.handleFrame(Lcom/rabbitmq/client/impl/Frame;)V+7
+j  com.rabbitmq.client.impl.AMQConnection.readFrame(Lcom/rabbitmq/client/impl/Frame;)V+33
+j  com.rabbitmq.client.impl.AMQConnection.access$300(Lcom/rabbitmq/client/impl/AMQConnection;Lcom/rabbitmq/client/impl/Frame;)V+2
+j  com.rabbitmq.client.impl.AMQConnection$MainLoop.run()V+30
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+V  [libjvm.so+0x68488a]
+V  [libjvm.so+0x681e6b]
+V  [libjvm.so+0x682457]
+V  [libjvm.so+0x6c93cb]
+V  [libjvm.so+0xa590e3]
+V  [libjvm.so+0xa5a2a8]
+V  [libjvm.so+0x8f2d82]
+C  [libpthread.so.0+0x76db]  start_thread+0xdb
+
+Java frames: (J=compiled Java code, j=interpreted, Vv=VM code)
+j  java.lang.ClassLoader.defineClass1(Ljava/lang/String;[BIILjava/security/ProtectionDomain;Ljava/lang/String;)Ljava/lang/Class;+0
+j  java.lang.ClassLoader.defineClass(Ljava/lang/String;[BIILjava/security/ProtectionDomain;)Ljava/lang/Class;+27
+j  java.security.SecureClassLoader.defineClass(Ljava/lang/String;[BIILjava/security/CodeSource;)Ljava/lang/Class;+12
+j  java.net.URLClassLoader.defineClass(Ljava/lang/String;Lsun/misc/Resource;)Ljava/lang/Class;+138
+J 359 C1 java.net.URLClassLoader$1.run()Ljava/lang/Class; (63 bytes) @ 0x00007fbed91d2c9c [0x00007fbed91d29e0+0x2bc]
+J 358 C1 java.net.URLClassLoader$1.run()Ljava/lang/Object; (5 bytes) @ 0x00007fbed91d264c [0x00007fbed91d25c0+0x8c]
+v  ~StubRoutines::call_stub
+J 372  java.security.AccessController.doPrivileged(Ljava/security/PrivilegedExceptionAction;Ljava/security/AccessControlContext;)Ljava/lang/Object; (0 bytes) @ 0x00007fbed91d3f23 [0x00007fbed91d3ec0+0x63]
+J 357 C1 java.net.URLClassLoader.findClass(Ljava/lang/String;)Ljava/lang/Class; (47 bytes) @ 0x00007fbed91d1784 [0x00007fbed91d1600+0x184]
+J 168 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (122 bytes) @ 0x00007fbed916c39c [0x00007fbed916ba40+0x95c]
+J 378 C1 sun.misc.Launcher$AppClassLoader.loadClass(Ljava/lang/String;Z)Ljava/lang/Class; (85 bytes) @ 0x00007fbed91e24cc [0x00007fbed91e1b40+0x98c]
+J 377 C1 java.lang.ClassLoader.loadClass(Ljava/lang/String;)Ljava/lang/Class; (7 bytes) @ 0x00007fbed91de604 [0x00007fbed91de500+0x104]
+v  ~StubRoutines::call_stub
+j  com.rabbitmq.client.impl.CommandAssembler.consumeMethodFrame(Lcom/rabbitmq/client/impl/Frame;)V+13
+j  com.rabbitmq.client.impl.CommandAssembler.handleFrame(Lcom/rabbitmq/client/impl/Frame;)Z+38
+j  com.rabbitmq.client.impl.AMQCommand.handleFrame(Lcom/rabbitmq/client/impl/Frame;)Z+5
+j  com.rabbitmq.client.impl.AMQChannel.handleFrame(Lcom/rabbitmq/client/impl/Frame;)V+7
+j  com.rabbitmq.client.impl.AMQConnection.readFrame(Lcom/rabbitmq/client/impl/Frame;)V+33
+j  com.rabbitmq.client.impl.AMQConnection.access$300(Lcom/rabbitmq/client/impl/AMQConnection;Lcom/rabbitmq/client/impl/Frame;)V+2
+j  com.rabbitmq.client.impl.AMQConnection$MainLoop.run()V+30
+j  java.lang.Thread.run()V+11
+v  ~StubRoutines::call_stub
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x00007fbec4001000 JavaThread "SIGTERM handler" daemon [_thread_blocked, id=8269, stack(0x00007fbea4dfb000,0x00007fbea4efc000)]
+=>0x00007fbee84ae800 JavaThread "AMQP Connection 68.183.253.43:5672" [_thread_in_vm, id=8241, stack(0x00007fbeac04d000,0x00007fbeac14e000)]
+  0x00007fbee80d1800 JavaThread "Service Thread" daemon [_thread_blocked, id=7945, stack(0x00007fbeed570000,0x00007fbeed671000)]
+  0x00007fbee80b4800 JavaThread "C1 CompilerThread1" daemon [_thread_blocked, id=7942, stack(0x00007fbeed672000,0x00007fbeed772000)]
+  0x00007fbee80b2000 JavaThread "C2 CompilerThread0" daemon [_thread_in_native, id=7937, stack(0x00007fbeed773000,0x00007fbeed873000)]
+  0x00007fbee80b0800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=7933, stack(0x00007fbeed873000,0x00007fbeed974000)]
+  0x00007fbee807e000 JavaThread "Finalizer" daemon [_thread_blocked, id=7895, stack(0x00007fbeedcb3000,0x00007fbeeddb4000)]
+  0x00007fbee8079800 JavaThread "Reference Handler" daemon [_thread_blocked, id=7889, stack(0x00007fbeeddb4000,0x00007fbeedeb5000)]
+  0x00007fbee800b800 JavaThread "main" [_thread_in_vm, id=7866, stack(0x00007fbef2546000,0x00007fbef2646000)]
+
+Other Threads:
+  0x00007fbee806f800 VMThread [stack: 0x00007fbeedeb6000,0x00007fbeedfb6000] [id=7883]
+  0x00007fbee80d4800 WatcherThread [stack: 0x00007fbeed470000,0x00007fbeed570000] [id=7953]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+heap address: 0x00000000f0800000, size: 248 MB, Compressed Oops mode: 32-bit
+Narrow klass base: 0x0000000000000000, Narrow klass shift: 3
+Compressed class space size: 1073741824 Address: 0x0000000100000000
+
