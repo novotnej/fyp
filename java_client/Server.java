@@ -4,6 +4,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import com.rabbitmq.http.client.Client;
 import com.rabbitmq.http.client.ClientParameters;
+import com.rabbitmq.http.client.domain.ExchangeInfo;
 import com.rabbitmq.http.client.domain.QueueInfo;
 
 import java.io.IOException;
@@ -58,12 +59,13 @@ public class Server {
     }
 
     protected void startExperiment(long startTimeStamp, int contentLength, int repeats, int threads, int sleepTime) {
-        List<QueueInfo> queues = getDeclaredExchanges();
-        queues.forEach(queueInfo -> {
-            if (!queueInfo.getName().equals(CONTROL_QUEUE_NAME)) {
+        List<ExchangeInfo> exchanges = getDeclaredExchanges();
+        exchanges.forEach(exchangeInfo -> {
+            if (exchangeInfo.getType().equals("fanout") && !exchangeInfo.getName().equals("amq.fanout")) {
+                //only create threads for fanout exchanges created by the clients
                 ServerThread thread = null;
                 try {
-                    thread = new ServerThread(startTimeStamp, contentLength, repeats, threads, sleepTime, queueInfo.getName());
+                    thread = new ServerThread(startTimeStamp, contentLength, repeats, threads, sleepTime, exchangeInfo.getName());
                 } catch (IOException | TimeoutException e) {
                     e.printStackTrace();
                 }
@@ -74,12 +76,12 @@ public class Server {
         });
     }
 
-    protected List<QueueInfo> getDeclaredExchanges() {
+    protected List<ExchangeInfo> getDeclaredExchanges() {
         try {
             Client c = new Client(
                     new ClientParameters().url("http://rabbitmq.profisites.com:15672/api/").username("guest").password("guest")
             );
-            return c.getQueues();
+            return c.getExchanges();
         } catch (URISyntaxException | MalformedURLException e) {
             e.printStackTrace();
         }
@@ -94,12 +96,18 @@ public class Server {
             );
             List<QueueInfo> queues = c.getQueues();
             queues.forEach(queueInfo -> {
-                if (queueInfo.getName().equals(CONTROL_QUEUE_NAME)) {
-
-                } else {
+                if (!queueInfo.getName().equals(CONTROL_QUEUE_NAME)) {
                     c.deleteQueue(queueInfo.getVhost(), queueInfo.getName());
                 }
             });
+            List<ExchangeInfo> exchanges = c.getExchanges();
+            exchanges.forEach(exchangeInfo -> {
+                if (exchangeInfo.getType().equals("fanout") && !exchangeInfo.getName().equals("amq.fanout")) {
+                    //delete fanout exchanges that are not the default fanout, hence probably created by the clients
+                    c.deleteExchange(exchangeInfo.getVhost(), exchangeInfo.getName());
+                }
+            });
+
         } catch (URISyntaxException | MalformedURLException e) {
             e.printStackTrace();
         }

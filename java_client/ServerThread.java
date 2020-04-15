@@ -21,7 +21,7 @@ public class ServerThread extends Thread {
 
     private int contentLength, repeats, threads, sleepTime;
     private long startTimeStamp, startTime, endTime, duration;
-    private String queueName;
+    private String exchangeName;
 
     public static String randomAlphaNumeric(int count) {
         StringBuilder builder = new StringBuilder();
@@ -34,16 +34,15 @@ public class ServerThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Q: " + queueName + ", REP: " + 0);
+        System.out.println("Q: " + exchangeName + ", REP: " + 0);
         for (int i = 0; i < repeats; i++) {
-            //System.out.println("Q: " + queueName + ", REP: " + i);
             startTime = java.lang.System.currentTimeMillis();
             String randomMessage = randomAlphaNumeric(contentLength);
             endTime = java.lang.System.currentTimeMillis();
             duration = endTime - startTime;
-            String message = queueName + "|" + startTime + "|" + endTime + "|" + duration + "|" + Instant.now().getEpochSecond();
+            String message = exchangeName + "|" + startTime + "|" + endTime + "|" + duration + "|" + Instant.now().getEpochSecond();
             try {
-                channel.basicPublish("", queueName, null, message.getBytes());
+                channel.basicPublish(exchangeName, "", null, message.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,21 +58,21 @@ public class ServerThread extends Thread {
     protected void terminateExperiment() {
         String message = "FINAL_MESSAGE";
         try {
-            channel.basicPublish("", queueName, null, message.getBytes());
+            channel.basicPublish("", exchangeName, null, message.getBytes());
             Thread.sleep(1000); //wait for a second so that the messages are delivered before deleting the queue
-            channel.queueDelete(queueName);
+            channel.queueDelete(exchangeName);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-    public ServerThread(long startTimeStamp, int contentLength, int repeats, int threads, int sleepTime, String queueName) throws IOException, TimeoutException {
+    public ServerThread(long startTimeStamp, int contentLength, int repeats, int threads, int sleepTime, String exchangeName) throws IOException, TimeoutException {
         this.startTimeStamp = startTimeStamp;
         this.contentLength = contentLength;
         this.repeats = repeats;
         this.threads = threads;
         this.sleepTime = sleepTime;
-        this.queueName = queueName;
+        this.exchangeName = exchangeName;
         factory = new ConnectionFactory();
         factory.setHost("rabbitmq.profisites.com");
         connection = factory.newConnection();

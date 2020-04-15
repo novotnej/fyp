@@ -34,6 +34,7 @@ class Client {
     protected void startExperiment(int contentLength, int repeats, int threads, int sleepTime) {
         System.out.println("Starting experiment");
         try {
+
             channel.queueDeclare(CONTROL_QUEUE_NAME, false, false, false, null);
             String message = "START:" + startTimeStamp[0] + ":" + contentLength + ":" + repeats + ":" + threads + ":" + sleepTime;
             channel.basicPublish("", CONTROL_QUEUE_NAME, null, message.getBytes());
@@ -45,10 +46,13 @@ class Client {
 
     protected void subscribeToQueue() throws IOException, TimeoutException, MPIException {
         factory = new ConnectionFactory();
-        factory.setHost("rabbitmq.profisites.com");
+        factory.setHost("68.183.37.164");
         connection = factory.newConnection();
         channel = connection.createChannel();
-        channel.queueDeclare(MPI.getProcessorName(), false, false, false, null);
+        channel.exchangeDeclare(MPI.getProcessorName(), "fanout", true);
+        channel.queueDeclare(normalizedName, false, false, false, null);
+        channel.queueBind(normalizedName, MPI.getProcessorName(), "");
+
 
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("./results/" + startTimeStamp[0] + "/" + normalizedName + ".txt", true)  //Set true for append mode
@@ -74,7 +78,7 @@ class Client {
 
             System.out.println(" [x] Received '" + message + "'");
         };
-        consumerTag = channel.basicConsume(MPI.getProcessorName(), true, deliverCallback, consumerTag -> { });
+        consumerTag = channel.basicConsume(normalizedName, true, deliverCallback, consumerTag -> { });
     }
 
     protected void prepareResultsDir() {
