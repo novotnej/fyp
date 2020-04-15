@@ -14,7 +14,7 @@ use Nette\Utils\Finder;
 use SplFileInfo;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ResultService extends CommonService {
+class JavaResultService extends CommonService {
     const NETWORK_LATENCY = 5.52749; //value obtained from the baseline test to establish the average network latency in ms
 
     /** @var OutputInterface */
@@ -44,22 +44,24 @@ class ResultService extends CommonService {
         $fh = fopen($resultFile->getRealPath(), "r");
         while(!feof($fh)) {
             $line = fgets($fh);
-            $result  = explode("|", $line);
+            if ($line != "") {
+                $result  = explode("|", $line);
 
-            if (isset($result[1])) {
-                $time = new \DateTime();
-                $time->setTimestamp((int) $result[4]);
+                if (isset($result[1])) {
+                    $time = new \DateTime();
+                    $time->setTimestamp((int) $result[4]);
 
-                $threadRun = new ThreadRun();
-                $threadRun->start = (int) $result[1];
-                $threadRun->end = (int) $result[2];
-                $threadRun->serverDuration = ((int)$result[3])/1000;
-                $threadRun->time = $time;
-                $threadRun->localDuration = (int)str_replace(PHP_EOL, "", $result[5]);
+                    $threadRun = new ThreadRun();
+                    $threadRun->start = (int) $result[1];
+                    $threadRun->end = (int) $result[2];
+                    $threadRun->serverDuration = ((int)$result[3]);
+                    $threadRun->time = $time;
+                    $threadRun->localDuration = $result[5];
 
-                if ($result[0] != "") {
-                    $thread->runs->add($threadRun);
-                    $thread->name = $result[0];
+                    if ($result[0] != "") {
+                        $thread->runs->add($threadRun);
+                        $thread->name = $result[0];
+                    }
                 }
             }
         }
@@ -95,26 +97,6 @@ class ResultService extends CommonService {
         }
         $this->threadRepository->flush();
         return $experiment;
-    }
-
-    function parserVmstat($lines = '') {
-        function isEmpty($value) {
-            return (strlen($value)) != 0;
-        }
-        if (strlen($lines) == 0) {
-            exec('vmstat', $res);
-        } else {
-            $res = $lines;
-        }
-        $keys = explode(' ', $res[1]);
-        $values = explode(' ', $res[2]);
-        $keys = array_values(array_filter( $keys, 'isEmpty'));
-
-        $parameters = array();
-        foreach($keys as $key => $value) {
-            $parameters[$value] = $values[$key];
-        }
-        return $parameters;
     }
 
     protected $vmstat = [];
@@ -171,8 +153,8 @@ class ResultService extends CommonService {
             $list[$i] = [
                 $i,
                 $result->threadCount,
-                $result->averageServerTime/1000,
-                $result->averageTotalTime/1000 - self::NETWORK_LATENCY
+                $result->averageServerTime,
+                $result->averageTotalTime - self::NETWORK_LATENCY
             ];
         }
 
@@ -200,9 +182,9 @@ class ResultService extends CommonService {
                 $result->contentLength,
                 $result->threadCount,
                 $result->sleep / 1000,
-                $result->averageServerTime/1000,
-                $result->averageTotalTime/1000,
-                $result->averageNetworkLatency/1000,
+                $result->averageServerTime,
+                $result->averageTotalTime,
+                $result->averageNetworkLatency,
                 $result->averageVmStat->free,
                 $result->averageVmStat->buff,
                 $result->averageVmStat->cache,
@@ -232,6 +214,8 @@ class ResultService extends CommonService {
 
             try {
                 $configFile = FileSystem::read($configFileName);
+                //fix config file that was incorrectly generated during the experiment
+                $configFile = str_replace("\"length", ",\"length", $configFile);
                 $config = @json_decode($configFile);
                 if (!$config) {
                     throw new \Exception("Malformatted config file");
@@ -244,8 +228,8 @@ class ResultService extends CommonService {
                 $experiment->iterations = $config->iterations;
                 $experiment->time = $dt;
                 $experiment = $this->calculateThreads($experiment, $resultDir);
-                $experiment = $this->attachVmstats($experiment);
-                $this->experimentRepository->persistAndFlush($experiment, true);
+                //$experiment = $this->attachVmstats($experiment);
+                //$this->experimentRepository->persistAndFlush($experiment, true);
                 $runs[] = $experiment;
             } catch (\Exception $e) {
                 //TODO - error handling into output here

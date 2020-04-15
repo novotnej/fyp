@@ -61,7 +61,7 @@ orm:
 session:
 	expiration: 14 days
 console:
-	url: https://harambe.com
+	url: http://dissertation.profisites.com
 decorator:
     Symfony\Component\Console\Command\Command:
         tags: [kdyby.console.command]
@@ -76,9 +76,12 @@ services:
 	- App\Components\SignIn\ISignInComponentFactory
 	- App\Services\ElasticService
 	- App\Services\ResultService
+	- App\Services\JavaResultService
 	- App\Components\Queues\IQueueEditFormFactory
 	- App\Components\Queues\IDeviceEditFormFactory
 	- App\Components\Messages\ISendMessageFormFactory
 	- App\Services\QueueService(@App\Repositories\QueuesRepository, @Gamee\RabbitMQ\Client::getProducer(messagesProducer))
 	- App\Console\MigrateResultsToElasticCommand
 	- App\Console\CalculateAverageFromExperimentCommand
+	- App\Console\MergeResultFilesCommand
+	- App\Console\CalculateJavaCommand
