@@ -1,5 +1,6 @@
-//TODO - update copyright notice
-
+/**
+ * Modified by Jan Novotny for the Final Year Project
+ */
 /***************************************************************************
  *                                  _   _ ____  _
  *  Project                     ___| | | |  _ \| |
@@ -21,10 +22,6 @@
  * KIND, either express or implied.
  *
  ***************************************************************************/
-/* <DESC>
- * Download a given URL into a local file named page.out.
- * </DESC>
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -48,12 +45,6 @@ u64 get_time_stamp() {
     return (1000000*tv.tv_sec) + tv.tv_usec;
 }
 
-void downloader_cleanup() {
-    fclose(pagefile);
-    curl_easy_cleanup(curl_handle);
-    curl_global_cleanup();
-}
-
 static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     end_time_stamp = get_time_stamp();
     size_t written = fwrite(ptr, size, nmemb, (FILE *) stream);
@@ -62,13 +53,11 @@ static size_t write_data(void *ptr, size_t size, size_t nmemb, void *stream) {
     fwrite(&nl, sizeof(char), strlen((const char *) &nl), (FILE *) stream);
     written+= strlen((const char *) &nl);
     //printf("Duration: %lld %lld %lld \n", end_time_stamp, start_time_stamp, (end_time_stamp - start_time_stamp));
-    //downloader_cleanup();
     return written;
 }
 
 
 void setup(char url[], char filename[]) {
-    //printf("%s \n", url);
     is_setup = 1;
 
     curl_global_init(CURL_GLOBAL_ALL);
@@ -92,16 +81,10 @@ void setup(char url[], char filename[]) {
     }
 }
 
-
 long int findSize(const char *file_name) {
     struct stat st; /*declare stat variable*/
-
     /*get the size using stat()*/
-
-    if (stat(file_name, &st) == 0)
-        return (st.st_size);
-    else
-        return 0;
+    return (stat(file_name, &st) == 0) ? st.st_size : 0;
 }
 
 void download_url(char url[], char filename[]) {
@@ -109,7 +92,6 @@ void download_url(char url[], char filename[]) {
         setup(url, filename);
     }
     start_time_stamp = get_time_stamp();
-    curl_easy_perform(curl_handle);
-
+    curl_easy_perform(curl_handle)
 }
 
